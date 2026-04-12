@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revol — Translate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+```
+body {
+  background: #0f0f1a;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(77,150,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77,150,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gridMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(40px); }
+}
+
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+  animation: blobFloat 8s ease-in-out infinite alternate;
+}
+
+.blob1 { width: 400px; height: 400px; background: #4d96ff; top: -100px; left: -100px; }
+.blob2 { width: 350px; height: 350px; background: #ff6b6b; bottom: -80px; right: -80px; animation-delay: -3s; }
+
+@keyframes blobFloat {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(30px, 20px) scale(1.08); }
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4d96ff, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+}
+
+.logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #ffd93d;
+  border-radius: 50%;
+  margin-left: 3px;
+  vertical-align: middle;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+.back-btn {
+  font-size: 0.85rem;
+  color: #888aaa;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.back-btn:hover { color: #f0f0ff; }
+
+.page-title {
+  margin-bottom: 32px;
+}
+
+.page-title h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.page-title h1 span { color: #4d96ff; }
+
+.page-title p {
+  color: #888aaa;
+  font-size: 0.95rem;
+}
+
+/* API Key panel */
+.api-panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.api-panel label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #888aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.api-panel input {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #f0f0ff;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.api-panel input:focus {
+  border-color: #4d96ff;
+}
+
+.api-status {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.api-status.saved {
+  background: rgba(107,203,119,0.15);
+  color: #6bcb77;
+}
+
+.api-status.empty {
+  background: rgba(255,107,107,0.15);
+  color: #ff6b6b;
+}
+
+.btn-save-key {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #4d96ff, #a78bfa);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.btn-save-key:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* Upload zone */
+.upload-zone {
+  background: #1a1a2e;
+  border: 2px dashed rgba(255,255,255,0.12);
+  border-radius: 24px;
+  padding: 48px 32px;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: #4d96ff;
+  background: rgba(77,150,255,0.05);
+}
+
+.upload-zone .upload-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.upload-zone h3 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.upload-zone p {
+  color: #888aaa;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  background: linear-gradient(135deg, #4d96ff, #a78bfa);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#file-input { display: none; }
+
+/* Progress */
+.progress-panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: none;
+}
+
+.progress-panel.visible { display: block; }
+
+.progress-label {
+  font-size: 0.9rem;
+  color: #888aaa;
+  margin-bottom: 12px;
+}
+
+.progress-bar-track {
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #4d96ff, #a78bfa);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* Result */
+.result-panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+  display: none;
+}
+
+.result-panel.visible { display: block; }
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: gap;
+  gap: 12px;
+}
+
+.result-header h2 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #4d96ff;
+}
+
+.btn-download {
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #6bcb77, #4d96ff);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-download:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.result-content {
+  color: #f0f0ff;
+  font-size: 1rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Error */
+.error-panel {
+  background: rgba(255,107,107,0.1);
+  border: 1px solid rgba(255,107,107,0.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  color: #ff6b6b;
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+  display: none;
+}
+
+.error-panel.visible { display: block; }
+```
+
+  </style>
+</head>
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+
+  <div class="wrapper">
+    <header>
+      <a href="index.html" class="logo">Revol<span></span></a>
+      <a href="index.html" class="back-btn">&#8592; Back to home</a>
+    </header>
+
+```
+<div class="page-title">
+  <h1>🌍 <span>Translate</span> your notes</h1>
+  <p>Upload a PDF in Spanish or Valenciano and get a clear English translation.</p>
+</div>
+
+<!-- API Key -->
+<div class="api-panel">
+  <label>OpenAI Key</label>
+  <input type="password" id="api-key-input" placeholder="Paste your API key here" />
+  <button class="btn-save-key" onclick="saveKey()">Save</button>
+  <span class="api-status empty" id="api-status">No key saved</span>
+</div>
+
+<!-- Upload -->
+<div class="upload-zone" id="upload-zone">
+  <span class="upload-icon">📄</span>
+  <h3>Drop your PDF here</h3>
+  <p>Or click the button to choose a file from your computer</p>
+  <button class="btn-primary" onclick="document.getElementById('file-input').click()">Choose a PDF</button>
+  <input type="file" id="file-input" accept=".pdf" onchange="handleFile(event)" />
+</div>
+
+<!-- Progress -->
+<div class="progress-panel" id="progress-panel">
+  <div class="progress-label" id="progress-label">Reading your PDF...</div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="error-panel" id="error-panel"></div>
+
+<!-- Result -->
+<div class="result-panel" id="result-panel">
+  <div class="result-header">
+    <h2>English Translation</h2>
+    <button class="btn-download" onclick="downloadResult()">Download as PDF</button>
+  </div>
+  <div class="result-content" id="result-content"></div>
+</div>
+```
+
+  </div>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // Load saved key
+    window.onload = function() {
+      var saved = localStorage.getItem('revol_api_key');
+      if (saved) {
+        document.getElementById('api-key-input').value = saved;
+        document.getElementById('api-status').textContent = 'Key saved';
+        document.getElementById('api-status').className = 'api-status saved';
+      }
+    };
+
+    function saveKey() {
+      var key = document.getElementById('api-key-input').value.trim();
+      if (!key) {
+        alert('Please paste your API key first.');
+        return;
+      }
+      localStorage.setItem('revol_api_key', key);
+      document.getElementById('api-status').textContent = 'Key saved';
+      document.getElementById('api-status').className = 'api-status saved';
+    }
+
+    function setProgress(label, percent) {
+      document.getElementById('progress-panel').className = 'progress-panel visible';
+      document.getElementById('progress-label').textContent = label;
+      document.getElementById('progress-bar').style.width = percent + '%';
+    }
+
+    function showError(msg) {
+      var el = document.getElementById('error-panel');
+      el.textContent = msg;
+      el.className = 'error-panel visible';
+    }
+
+    function hideError() {
+      document.getElementById('error-panel').className = 'error-panel';
+    }
+
+    async function handleFile(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+
+      var key = localStorage.getItem('revol_api_key');
+      if (!key) {
+        showError('Please save your OpenAI API key before translating.');
+        return;
+      }
+
+      hideError();
+      document.getElementById('result-panel').className = 'result-panel';
+      setProgress('Reading your PDF...', 10);
+
+      try {
+        // Extract text from PDF
+        var arrayBuffer = await file.arrayBuffer();
+        var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        var fullText = '';
+
+        for (var i = 1; i <= pdf.numPages; i++) {
+          setProgress('Reading page ' + i + ' of ' + pdf.numPages + '...', 10 + (i / pdf.numPages * 40));
+          var page = await pdf.getPage(i);
+          var content = await page.getTextContent();
+          var pageText = content.items.map(function(item) { return item.str; }).join(' ');
+          fullText += 'Page ' + i + ':\n' + pageText + '\n\n';
+        }
+
+        if (!fullText.trim()) {
+          showError('Could not extract text from this PDF. It may be a scanned image. Try a text-based PDF for now.');
+          document.getElementById('progress-panel').className = 'progress-panel';
+          return;
+        }
+
+        setProgress('Sending to AI for translation...', 55);
+
+        // Send to GPT-4o
+        var response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + key
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a helpful translator and academic assistant. The user will provide revision notes in Spanish or Valenciano. Translate them fully and accurately into clear English, preserving the structure, headings, lists, and layout as closely as possible. Keep all subject-specific terms accurate. Do not summarise — translate the full content.'
+              },
+              {
+                role: 'user',
+                content: 'Please translate the following revision notes into English:\n\n' + fullText
+              }
+            ],
+            max_tokens: 4000
+          })
+        });
+
+        setProgress('Receiving translation...', 85);
+
+        var data = await response.json();
+
+        if (data.error) {
+          showError('OpenAI error: ' + data.error.message);
+          document.getElementById('progress-panel').className = 'progress-panel';
+          return;
+        }
+
+        var translation = data.choices[0].message.content;
+
+        setProgress('Done!', 100);
+
+        setTimeout(function() {
+          document.getElementById('progress-panel').className = 'progress-panel';
+          document.getElementById('result-content').textContent = translation;
+          document.getElementById('result-panel').className = 'result-panel visible';
+        }, 600);
+
+      } catch (err) {
+        showError('Something went wrong: ' + err.message);
+        document.getElementById('progress-panel').className = 'progress-panel';
+      }
+    }
+
+    function downloadResult() {
+      var text = document.getElementById('result-content').textContent;
+      if (!text) return;
+
+      var blob = new Blob([text], { type: 'text/plain' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'revol-translation.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Drag and drop
+    var zone = document.getElementById('upload-zone');
+    zone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      zone.className = 'upload-zone dragover';
+    });
+    zone.addEventListener('dragleave', function() {
+      zone.className = 'upload-zone';
+    });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.className = 'upload-zone';
+      var file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        handleFile({ target: { files: [file] } });
+      } else {
+        showError('Please drop a PDF file.');
+      }
+    });
+  </script>
+
+</body>
+</html>
