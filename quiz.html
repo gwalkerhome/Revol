@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revol — Quiz Me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+```
+body {
+  background: #0f0f1a;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,217,61,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,217,61,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gridMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(40px); }
+}
+
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: blobFloat 8s ease-in-out infinite alternate;
+}
+
+.blob1 { width: 400px; height: 400px; background: #ffd93d; top: -100px; right: -100px; }
+.blob2 { width: 300px; height: 300px; background: #ff6b6b; bottom: -80px; left: -80px; animation-delay: -3s; }
+
+@keyframes blobFloat {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(20px, 20px) scale(1.08); }
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4d96ff, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+}
+
+.logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #ffd93d;
+  border-radius: 50%;
+  margin-left: 3px;
+  vertical-align: middle;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+.back-btn {
+  font-size: 0.85rem;
+  color: #888aaa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.back-btn:hover { color: #f0f0ff; }
+
+.page-title { margin-bottom: 32px; }
+
+.page-title h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.page-title h1 span { color: #ffd93d; }
+.page-title p { color: #888aaa; font-size: 0.95rem; }
+
+.panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.panel h2 {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #ffd93d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.api-panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.api-panel label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #888aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.api-panel input {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #f0f0ff;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.api-panel input:focus { border-color: #ffd93d; }
+
+.api-status {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.api-status.saved { background: rgba(107,203,119,0.15); color: #6bcb77; }
+.api-status.empty { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+
+.btn-save-key {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  color: #0f0f1a;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.btn-save-key:hover { transform: scale(1.05); }
+
+textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 16px;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  min-height: 160px;
+  transition: border-color 0.2s;
+}
+
+textarea:focus { border-color: #ffd93d; }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.settings-row label {
+  font-size: 0.85rem;
+  color: #888aaa;
+  font-weight: 700;
+}
+
+.settings-row input[type="number"] {
+  width: 70px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  text-align: center;
+}
+
+.btn-generate {
+  display: inline-block;
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  color: #0f0f1a;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.btn-generate:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.progress-panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: none;
+}
+
+.progress-panel.visible { display: block; }
+.progress-label { font-size: 0.9rem; color: #888aaa; margin-bottom: 12px; }
+
+.progress-bar-track {
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #ffd93d, #ff6b6b);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.error-panel {
+  background: rgba(255,107,107,0.1);
+  border: 1px solid rgba(255,107,107,0.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  color: #ff6b6b;
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+  display: none;
+}
+
+.error-panel.visible { display: block; }
+
+/* Quiz UI */
+.quiz-panel { display: none; }
+.quiz-panel.visible { display: block; }
+
+.quiz-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.quiz-counter {
+  font-size: 0.85rem;
+  color: #888aaa;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.quiz-type-badge {
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: rgba(255,217,61,0.15);
+  color: #ffd93d;
+}
+
+.quiz-progress-bar-track {
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.quiz-progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #ffd93d, #ff6b6b);
+  transition: width 0.4s ease;
+}
+
+.question-card {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.question-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 24px;
+  color: #f0f0ff;
+}
+
+/* Multiple choice */
+.choices { display: flex; flex-direction: column; gap: 12px; }
+
+.choice-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.choice-btn:hover { border-color: #ffd93d; background: rgba(255,217,61,0.06); }
+.choice-btn.selected { border-color: #ffd93d; background: rgba(255,217,61,0.12); }
+.choice-btn.correct { border-color: #6bcb77; background: rgba(107,203,119,0.15); color: #6bcb77; }
+.choice-btn.incorrect { border-color: #ff6b6b; background: rgba(255,107,107,0.12); color: #ff6b6b; }
+
+/* Text answer */
+.answer-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.answer-input:focus { border-color: #ffd93d; }
+
+.btn-submit {
+  margin-top: 16px;
+  padding: 12px 32px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  color: #0f0f1a;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.btn-submit:hover { transform: scale(1.05); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.feedback-box {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  display: none;
+}
+
+.feedback-box.visible { display: block; }
+.feedback-box.correct { background: rgba(107,203,119,0.12); border: 1px solid rgba(107,203,119,0.3); color: #6bcb77; }
+.feedback-box.incorrect { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.25); color: #f0f0ff; }
+.feedback-box.partial { background: rgba(255,217,61,0.1); border: 1px solid rgba(255,217,61,0.25); color: #f0f0ff; }
+
+.btn-next {
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #4d96ff, #a78bfa);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+  display: none;
+  margin-top: 16px;
+}
+
+.btn-next.visible { display: block; }
+.btn-next:hover { transform: scale(1.02); }
+
+/* Results */
+.results-panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+  display: none;
+}
+
+.results-panel.visible { display: block; }
+
+.results-score {
+  font-size: 4rem;
+  font-weight: 900;
+  font-family: 'Space Mono', monospace;
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.results-label {
+  font-size: 1rem;
+  color: #888aaa;
+  margin-bottom: 32px;
+}
+
+.results-message {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.btn-restart {
+  padding: 14px 36px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  color: #0f0f1a;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+  margin-right: 12px;
+}
+
+.btn-restart:hover { transform: scale(1.05); }
+
+.btn-print {
+  padding: 14px 36px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.btn-print:hover { border-color: #ffd93d; }
+
+/* Print styles */
+@media print {
+  body { background: white; color: black; font-family: Arial, sans-serif; }
+  body::before, .blob { display: none; }
+  header, .api-panel, .setup-panel, .progress-panel, .quiz-panel, .results-panel { display: none !important; }
+  .print-sheet { display: block !important; }
+}
+
+.print-sheet { display: none; }
+
+  </style>
+</head>
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+
+  <div class="wrapper">
+    <header>
+      <a href="index.html" class="logo">Revol<span></span></a>
+      <a href="index.html" class="back-btn">&#8592; Back to home</a>
+    </header>
+
+<div class="page-title">
+  <h1>&#9889; <span>Quiz</span> yourself</h1>
+  <p>Paste your translated notes and Revol will generate a quiz to test your knowledge.</p>
+</div>
+
+<!-- API Key -->
+<div class="api-panel">
+  <label>OpenAI Key</label>
+  <input type="password" id="api-key-input" placeholder="Paste your API key here" />
+  <button class="btn-save-key" onclick="saveKey()">Save</button>
+  <span class="api-status empty" id="api-status">No key saved</span>
+</div>
+
+<!-- Setup -->
+<div class="panel setup-panel" id="setup-panel">
+  <h2>Your notes</h2>
+  <textarea id="notes-input" placeholder="Paste your translated revision notes here..."></textarea>
+  <div class="settings-row">
+    <label>Number of questions:</label>
+    <input type="number" id="question-count" value="10" min="1" max="30" />
+  </div>
+  <button class="btn-generate" onclick="generateQuiz()">Generate Quiz</button>
+</div>
+
+<!-- Progress -->
+<div class="progress-panel" id="progress-panel">
+  <div class="progress-label" id="progress-label">Generating your quiz...</div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="error-panel" id="error-panel"></div>
+
+<!-- Quiz -->
+<div class="quiz-panel" id="quiz-panel">
+  <div class="quiz-progress-row">
+    <span class="quiz-counter" id="quiz-counter">Question 1 of 10</span>
+    <span class="quiz-type-badge" id="quiz-type-badge">Multiple Choice</span>
+  </div>
+  <div class="quiz-progress-bar-track">
+    <div class="quiz-progress-bar-fill" id="quiz-progress-bar"></div>
+  </div>
+
+  <div class="question-card">
+    <div class="question-text" id="question-text"></div>
+    <div id="question-input-area"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question &#8594;</button>
+  </div>
+</div>
+
+<!-- Results -->
+<div class="results-panel" id="results-panel">
+  <div class="results-score" id="results-score">8/10</div>
+  <div class="results-label">questions answered correctly</div>
+  <div class="results-message" id="results-message"></div>
+  <button class="btn-restart" onclick="restartQuiz()">Try Again</button>
+  <button class="btn-print" onclick="printQuiz()">Print Quiz</button>
+</div>
+
+  </div>
+
+  <!-- Print sheet (hidden on screen) -->
+
+  <div class="print-sheet" id="print-sheet"></div>
+
+  <script>
+    var questions = [];
+    var currentQ = 0;
+    var score = 0;
+    var userAnswers = [];
+
+    window.onload = function() {
+      var saved = localStorage.getItem('revol_api_key');
+      if (saved) {
+        document.getElementById('api-key-input').value = saved;
+        document.getElementById('api-status').textContent = 'Key saved';
+        document.getElementById('api-status').className = 'api-status saved';
+      }
+    };
+
+    function saveKey() {
+      var key = document.getElementById('api-key-input').value.trim();
+      if (!key) { alert('Please paste your API key first.'); return; }
+      localStorage.setItem('revol_api_key', key);
+      document.getElementById('api-status').textContent = 'Key saved';
+      document.getElementById('api-status').className = 'api-status saved';
+    }
+
+    function setProgress(label, percent) {
+      document.getElementById('progress-panel').className = 'progress-panel visible';
+      document.getElementById('progress-label').textContent = label;
+      document.getElementById('progress-bar').style.width = percent + '%';
+    }
+
+    function showError(msg) {
+      var el = document.getElementById('error-panel');
+      el.textContent = msg;
+      el.className = 'error-panel visible';
+    }
+
+    function hideError() {
+      document.getElementById('error-panel').className = 'error-panel';
+    }
+
+    async function generateQuiz() {
+      var notes = document.getElementById('notes-input').value.trim();
+      var count = parseInt(document.getElementById('question-count').value) || 10;
+      var key = localStorage.getItem('revol_api_key');
+
+      if (!key) { showError('Please save your OpenAI API key first.'); return; }
+      if (!notes) { showError('Please paste your revision notes first.'); return; }
+
+      hideError();
+      setProgress('Generating your quiz...', 30);
+      document.getElementById('setup-panel').style.display = 'none';
+
+      var prompt = 'You are an experienced teacher creating a revision quiz for a 13-year-old English-speaking student studying in Spain. The student has the following revision notes:\n\n' + notes + '\n\nCreate exactly ' + count + ' quiz questions based on these notes. Use a variety of question types to prepare the student for school exams:\n- Multiple choice questions (provide exactly 4 options labelled A, B, C, D)\n- One word answer questions\n- Short answer questions (2-3 sentences expected)\n- At least one longer exam-style question requiring a paragraph answer\n\nReturn ONLY a JSON array with no other text, preamble or explanation. Each object must have these fields:\n- type: either "multiple_choice", "one_word", "short_answer", or "long_answer"\n- question: the question text\n- choices: array of 4 strings (only for multiple_choice, otherwise omit)\n- correct_answer: the correct answer or for multiple_choice the correct letter (A, B, C or D)\n- explanation: a brief explanation of the correct answer to show as feedback\n\nMake the questions varied and do not make them identical to any previous set.';
+
+      try {
+        var response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + key
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            max_tokens: 3000,
+            messages: [
+              { role: 'user', content: prompt }
+            ]
+          })
+        });
+
+        setProgress('Building your quiz...', 75);
+
+        var data = await response.json();
+        if (data.error) { throw new Error(data.error.message); }
+
+        var raw = data.choices[0].message.content.trim();
+        raw = raw.replace(/^```json/, '').replace(/^```/, '').replace(/```$/, '').trim();
+        questions = JSON.parse(raw);
+
+        setProgress('Ready!', 100);
+
+        setTimeout(function() {
+          document.getElementById('progress-panel').className = 'progress-panel';
+          startQuiz();
+        }, 600);
+
+      } catch (err) {
+        showError('Something went wrong: ' + err.message);
+        document.getElementById('progress-panel').className = 'progress-panel';
+        document.getElementById('setup-panel').style.display = 'block';
+      }
+    }
+
+    function startQuiz() {
+      currentQ = 0;
+      score = 0;
+      userAnswers = [];
+      document.getElementById('quiz-panel').className = 'quiz-panel visible';
+      document.getElementById('results-panel').className = 'results-panel';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      var q = questions[currentQ];
+      var total = questions.length;
+
+      document.getElementById('quiz-counter').textContent = 'Question ' + (currentQ + 1) + ' of ' + total;
+      document.getElementById('quiz-progress-bar').style.width = ((currentQ / total) * 100) + '%';
+
+      var typeLabels = {
+        multiple_choice: 'Multiple Choice',
+        one_word: 'One Word Answer',
+        short_answer: 'Short Answer',
+        long_answer: 'Extended Answer'
+      };
+      document.getElementById('quiz-type-badge').textContent = typeLabels[q.type] || q.type;
+      document.getElementById('question-text').textContent = q.question;
+
+      var area = document.getElementById('question-input-area');
+      area.innerHTML = '';
+
+      document.getElementById('feedback-box').className = 'feedback-box';
+      document.getElementById('btn-next').className = 'btn-next';
+
+      if (q.type === 'multiple_choice') {
+        var div = document.createElement('div');
+        div.className = 'choices';
+        var letters = ['A', 'B', 'C', 'D'];
+        q.choices.forEach(function(choice, i) {
+          var btn = document.createElement('button');
+          btn.className = 'choice-btn';
+          btn.textContent = letters[i] + '. ' + choice;
+          btn.onclick = function() { selectChoice(letters[i], btn); };
+          div.appendChild(btn);
+        });
+        area.appendChild(div);
+      } else {
+        var rows = q.type === 'long_answer' ? 6 : q.type === 'short_answer' ? 3 : 1;
+        var ta = document.createElement('textarea');
+        ta.className = 'answer-input';
+        ta.rows = rows;
+        ta.placeholder = q.type === 'one_word' ? 'Type your answer...' : 'Write your answer here...';
+        ta.id = 'text-answer';
+        area.appendChild(ta);
+
+        var submitBtn = document.createElement('button');
+        submitBtn.className = 'btn-submit';
+        submitBtn.textContent = 'Submit Answer';
+        submitBtn.onclick = function() { submitTextAnswer(submitBtn); };
+        area.appendChild(submitBtn);
+      }
+    }
+
+    function selectChoice(letter, btn) {
+      var q = questions[currentQ];
+      var allBtns = document.querySelectorAll('.choice-btn');
+      allBtns.forEach(function(b) { b.onclick = null; b.style.cursor = 'default'; });
+
+      var isCorrect = letter === q.correct_answer;
+      if (isCorrect) {
+        btn.className = 'choice-btn correct';
+        score++;
+        userAnswers.push({ question: q.question, answer: letter, correct: true });
+        showFeedback(true, 'Correct! ' + q.explanation);
+      } else {
+        btn.className = 'choice-btn incorrect';
+        allBtns.forEach(function(b) {
+          var l = b.textContent.charAt(0);
+          if (l === q.correct_answer) { b.className = 'choice-btn correct'; }
+        });
+        userAnswers.push({ question: q.question, answer: letter, correct: false });
+        showFeedback(false, 'Not quite. The correct answer is ' + q.correct_answer + '. ' + q.explanation);
+      }
+    }
+
+    async function submitTextAnswer(btn) {
+      var answer = document.getElementById('text-answer').value.trim();
+      if (!answer) { alert('Please write an answer first.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Marking...';
+
+      var q = questions[currentQ];
+      var key = localStorage.getItem('revol_api_key');
+
+      try {
+        var response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + key
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            max_tokens: 300,
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a helpful teacher marking a student revision answer. Be encouraging. Accept answers that are correct in substance even if not word-perfect. Reply in this exact format with no other text:\nRESULT: correct OR partial OR incorrect\nFEEDBACK: one or two sentences of helpful feedback explaining what was good or what the correct answer is.'
+              },
+              {
+                role: 'user',
+                content: 'Question: ' + q.question + '\nModel answer: ' + q.correct_answer + '\nStudent answer: ' + answer
+              }
+            ]
+          })
+        });
+
+        var data = await response.json();
+        var reply = data.choices[0].message.content.trim();
+        var resultMatch = reply.match(/RESULT:\s*(correct|partial|incorrect)/i);
+        var feedbackMatch = reply.match(/FEEDBACK:\s*(.+)/i);
+
+        var result = resultMatch ? resultMatch[1].toLowerCase() : 'incorrect';
+        var feedback = feedbackMatch ? feedbackMatch[1] : q.explanation;
+
+        if (result === 'correct') { score++; }
+        userAnswers.push({ question: q.question, answer: answer, correct: result === 'correct' });
+
+        var isCorrect = result === 'correct';
+        var isPartial = result === 'partial';
+        showFeedback(isCorrect, feedback, isPartial);
+
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Submit Answer';
+        alert('Marking failed: ' + err.message);
+      }
+    }
+
+    function showFeedback(correct, message, partial) {
+      var box = document.getElementById('feedback-box');
+      var icon = correct ? '✓ ' : partial ? '~ ' : '✗ ';
+      box.textContent = icon + message;
+      box.className = 'feedback-box visible ' + (correct ? 'correct' : partial ? 'partial' : 'incorrect');
+      document.getElementById('btn-next').className = 'btn-next visible';
+
+      var isLast = currentQ >= questions.length - 1;
+      document.getElementById('btn-next').textContent = isLast ? 'See Results' : 'Next Question →';
+    }
+
+    function nextQuestion() {
+      currentQ++;
+      if (currentQ >= questions.length) {
+        showResults();
+      } else {
+        showQuestion();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-panel').className = 'quiz-panel';
+      var total = questions.length;
+      var percent = Math.round((score / total) * 100);
+
+      document.getElementById('results-score').textContent = score + '/' + total;
+
+      var msg = '';
+      if (percent >= 90) { msg = 'Outstanding! You really know this topic well.'; }
+      else if (percent >= 70) { msg = 'Great work! A bit more revision on the tricky parts and you will nail it.'; }
+      else if (percent >= 50) { msg = 'Good effort! Review the questions you missed and try again.'; }
+      else { msg = 'Keep going! Read through your notes again and give it another try.'; }
+
+      document.getElementById('results-message').textContent = msg;
+      document.getElementById('results-panel').className = 'results-panel visible';
+
+      buildPrintSheet();
+    }
+
+    function buildPrintSheet() {
+      var html = '<h1 style="font-size:18px; margin-bottom:4px;">Revol Revision Quiz</h1>';
+      html += '<p style="font-size:12px; margin-bottom:20px; color:#555;">Name: _________________________ &nbsp;&nbsp; Date: _______________ &nbsp;&nbsp; Score: ____/' + questions.length + '</p>';
+      html += '<hr style="margin-bottom:20px;">';
+
+      questions.forEach(function(q, i) {
+        html += '<p style="font-weight:bold; margin-bottom:6px;">' + (i + 1) + '. ' + q.question + '</p>';
+        if (q.type === 'multiple_choice') {
+          var letters = ['A', 'B', 'C', 'D'];
+          q.choices.forEach(function(c, ci) {
+            html += '<p style="margin-left:16px; margin-bottom:4px;">&#9675; ' + letters[ci] + '. ' + c + '</p>';
+          });
+          html += '<br>';
+        } else if (q.type === 'one_word') {
+          html += '<p style="margin-bottom:16px;">Answer: ___________________________</p>';
+        } else {
+          var lines = q.type === 'long_answer' ? 6 : 3;
+          for (var l = 0; l < lines; l++) {
+            html += '<p style="border-bottom:1px solid #ccc; margin-bottom:8px; padding-bottom:8px;">&nbsp;</p>';
+          }
+          html += '<br>';
+        }
+      });
+
+      document.getElementById('print-sheet').innerHTML = html;
+    }
+
+    function printQuiz() {
+      window.print();
+    }
+
+    function restartQuiz() {
+      document.getElementById('results-panel').className = 'results-panel';
+      document.getElementById('setup-panel').style.display = 'block';
+      questions = [];
+      currentQ = 0;
+      score = 0;
+      userAnswers = [];
+    }
+  </script>
+
+</body>
+</html>
