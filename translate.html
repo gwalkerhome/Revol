@@ -10,7 +10,6 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-
 body {
   background: #0f0f1a;
   color: #f0f0ff;
@@ -101,17 +100,12 @@ header {
   font-size: 0.85rem;
   color: #888aaa;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
   transition: color 0.2s;
 }
 
 .back-btn:hover { color: #f0f0ff; }
 
-.page-title {
-  margin-bottom: 32px;
-}
+.page-title { margin-bottom: 32px; }
 
 .page-title h1 {
   font-size: 2rem;
@@ -121,12 +115,8 @@ header {
 
 .page-title h1 span { color: #4d96ff; }
 
-.page-title p {
-  color: #888aaa;
-  font-size: 0.95rem;
-}
+.page-title p { color: #888aaa; font-size: 0.95rem; }
 
-/* API Key panel */
 .api-panel {
   background: #1a1a2e;
   border: 1px solid rgba(255,255,255,0.07);
@@ -162,9 +152,7 @@ header {
   transition: border-color 0.2s;
 }
 
-.api-panel input:focus {
-  border-color: #4d96ff;
-}
+.api-panel input:focus { border-color: #4d96ff; }
 
 .api-status {
   font-size: 0.8rem;
@@ -174,15 +162,8 @@ header {
   white-space: nowrap;
 }
 
-.api-status.saved {
-  background: rgba(107,203,119,0.15);
-  color: #6bcb77;
-}
-
-.api-status.empty {
-  background: rgba(255,107,107,0.15);
-  color: #ff6b6b;
-}
+.api-status.saved { background: rgba(107,203,119,0.15); color: #6bcb77; }
+.api-status.empty { background: rgba(255,107,107,0.15); color: #ff6b6b; }
 
 .btn-save-key {
   padding: 10px 20px;
@@ -195,15 +176,10 @@ header {
   font-size: 0.9rem;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
-  white-space: nowrap;
 }
 
-.btn-save-key:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
+.btn-save-key:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
-/* Upload zone */
 .upload-zone {
   background: #1a1a2e;
   border: 2px dashed rgba(255,255,255,0.12);
@@ -220,23 +196,9 @@ header {
   background: rgba(77,150,255,0.05);
 }
 
-.upload-zone .upload-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-  display: block;
-}
-
-.upload-zone h3 {
-  font-size: 1.2rem;
-  font-weight: 900;
-  margin-bottom: 8px;
-}
-
-.upload-zone p {
-  color: #888aaa;
-  font-size: 0.9rem;
-  margin-bottom: 24px;
-}
+.upload-zone .upload-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+.upload-zone h3 { font-size: 1.2rem; font-weight: 900; margin-bottom: 8px; }
+.upload-zone p { color: #888aaa; font-size: 0.9rem; margin-bottom: 24px; }
 
 .btn-primary {
   display: inline-block;
@@ -252,20 +214,10 @@ header {
   color: white;
 }
 
-.btn-primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-}
-
-.btn-primary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
+.btn-primary:hover { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
 
 #file-input { display: none; }
 
-/* Progress */
 .progress-panel {
   background: #1a1a2e;
   border: 1px solid rgba(255,255,255,0.07);
@@ -277,11 +229,7 @@ header {
 
 .progress-panel.visible { display: block; }
 
-.progress-label {
-  font-size: 0.9rem;
-  color: #888aaa;
-  margin-bottom: 12px;
-}
+.progress-label { font-size: 0.9rem; color: #888aaa; margin-bottom: 12px; }
 
 .progress-bar-track {
   background: rgba(255,255,255,0.07);
@@ -298,7 +246,6 @@ header {
   transition: width 0.4s ease;
 }
 
-/* Result */
 .result-panel {
   background: #1a1a2e;
   border: 1px solid rgba(255,255,255,0.07);
@@ -315,15 +262,11 @@ header {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
-  flex-wrap: gap;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
-.result-header h2 {
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: #4d96ff;
-}
+.result-header h2 { font-size: 1.2rem; font-weight: 900; color: #4d96ff; }
 
 .btn-download {
   padding: 10px 24px;
@@ -338,20 +281,30 @@ header {
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.btn-download:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
+.btn-download:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
 .result-content {
   color: #f0f0ff;
   font-size: 1rem;
   line-height: 1.8;
-  white-space: pre-wrap;
   word-break: break-word;
 }
 
-/* Error */
+.page-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 24px 0;
+}
+
+.page-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4d96ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
 .error-panel {
   background: rgba(255,107,107,0.1);
   border: 1px solid rgba(255,107,107,0.3);
@@ -382,7 +335,6 @@ header {
   <p>Upload a PDF in Spanish or Valenciano and get a clear English translation.</p>
 </div>
 
-<!-- API Key -->
 <div class="api-panel">
   <label>OpenAI Key</label>
   <input type="password" id="api-key-input" placeholder="Paste your API key here" />
@@ -390,7 +342,6 @@ header {
   <span class="api-status empty" id="api-status">No key saved</span>
 </div>
 
-<!-- Upload -->
 <div class="upload-zone" id="upload-zone">
   <span class="upload-icon">📄</span>
   <h3>Drop your PDF here</h3>
@@ -399,22 +350,19 @@ header {
   <input type="file" id="file-input" accept=".pdf" onchange="handleFile(event)" />
 </div>
 
-<!-- Progress -->
 <div class="progress-panel" id="progress-panel">
-  <div class="progress-label" id="progress-label">Reading your PDF...</div>
+  <div class="progress-label" id="progress-label">Loading your PDF...</div>
   <div class="progress-bar-track">
     <div class="progress-bar-fill" id="progress-bar"></div>
   </div>
 </div>
 
-<!-- Error -->
 <div class="error-panel" id="error-panel"></div>
 
-<!-- Result -->
 <div class="result-panel" id="result-panel">
   <div class="result-header">
     <h2>English Translation</h2>
-    <button class="btn-download" onclick="downloadResult()">Download as PDF</button>
+    <button class="btn-download" onclick="downloadResult()">Download as text file</button>
   </div>
   <div class="result-content" id="result-content"></div>
 </div>
@@ -424,7 +372,6 @@ header {
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    // Load saved key
     window.onload = function() {
       var saved = localStorage.getItem('revol_api_key');
       if (saved) {
@@ -436,10 +383,7 @@ header {
 
     function saveKey() {
       var key = document.getElementById('api-key-input').value.trim();
-      if (!key) {
-        alert('Please paste your API key first.');
-        return;
-      }
+      if (!key) { alert('Please paste your API key first.'); return; }
       localStorage.setItem('revol_api_key', key);
       document.getElementById('api-status').textContent = 'Key saved';
       document.getElementById('api-status').className = 'api-status saved';
@@ -461,84 +405,98 @@ header {
       document.getElementById('error-panel').className = 'error-panel';
     }
 
+    function pageToBase64(page) {
+      return new Promise(function(resolve) {
+        var viewport = page.getViewport({ scale: 2 });
+        var canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        var ctx = canvas.getContext('2d');
+        page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function() {
+          resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+        });
+      });
+    }
+
+    async function translatePage(base64Image, pageNum, totalPages, apiKey) {
+      var response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + apiKey
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          max_tokens: 4000,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a translator helping an English-speaking student who studies in Spanish or Valenciano. Translate all text in the image into clear, accurate English. Preserve headings, numbered lists, and structure. For any diagrams, charts or images, describe what they show and translate any labels. Do not summarise — translate everything fully.'
+            },
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: 'data:image/jpeg;base64,' + base64Image,
+                    detail: 'high'
+                  }
+                },
+                {
+                  type: 'text',
+                  text: 'Page ' + pageNum + ' of ' + totalPages + '. Translate all text to English and describe any diagrams or images.'
+                }
+              ]
+            }
+          ]
+        })
+      });
+
+      var data = await response.json();
+      if (data.error) { throw new Error(data.error.message); }
+      return data.choices[0].message.content;
+    }
+
+    var allTranslations = [];
+
     async function handleFile(event) {
       var file = event.target.files[0];
       if (!file) return;
 
       var key = localStorage.getItem('revol_api_key');
-      if (!key) {
-        showError('Please save your OpenAI API key before translating.');
-        return;
-      }
+      if (!key) { showError('Please save your OpenAI API key before translating.'); return; }
 
       hideError();
+      allTranslations = [];
+      document.getElementById('result-content').innerHTML = '';
       document.getElementById('result-panel').className = 'result-panel';
-      setProgress('Reading your PDF...', 10);
+      setProgress('Loading your PDF...', 5);
 
       try {
-        // Extract text from PDF
         var arrayBuffer = await file.arrayBuffer();
         var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        var fullText = '';
+        var totalPages = pdf.numPages;
 
-        for (var i = 1; i <= pdf.numPages; i++) {
-          setProgress('Reading page ' + i + ' of ' + pdf.numPages + '...', 10 + (i / pdf.numPages * 40));
+        document.getElementById('result-panel').className = 'result-panel visible';
+
+        for (var i = 1; i <= totalPages; i++) {
+          setProgress('Translating page ' + i + ' of ' + totalPages + '...', 5 + (i / totalPages * 90));
+
           var page = await pdf.getPage(i);
-          var content = await page.getTextContent();
-          var pageText = content.items.map(function(item) { return item.str; }).join(' ');
-          fullText += 'Page ' + i + ':\n' + pageText + '\n\n';
+          var base64 = await pageToBase64(page);
+          var translation = await translatePage(base64, i, totalPages, key);
+
+          allTranslations.push('Page ' + i + '\n\n' + translation);
+
+          var divider = i > 1 ? '<hr class="page-divider">' : '';
+          document.getElementById('result-content').innerHTML += divider + '<div class="page-label">Page ' + i + '</div><div>' + translation.replace(/\n/g, '<br>') + '</div>';
         }
 
-        if (!fullText.trim()) {
-          showError('Could not extract text from this PDF. It may be a scanned image. Try a text-based PDF for now.');
-          document.getElementById('progress-panel').className = 'progress-panel';
-          return;
-        }
-
-        setProgress('Sending to AI for translation...', 55);
-
-        // Send to GPT-4o
-        var response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + key
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a helpful translator and academic assistant. The user will provide revision notes in Spanish or Valenciano. Translate them fully and accurately into clear English, preserving the structure, headings, lists, and layout as closely as possible. Keep all subject-specific terms accurate. Do not summarise — translate the full content.'
-              },
-              {
-                role: 'user',
-                content: 'Please translate the following revision notes into English:\n\n' + fullText
-              }
-            ],
-            max_tokens: 4000
-          })
-        });
-
-        setProgress('Receiving translation...', 85);
-
-        var data = await response.json();
-
-        if (data.error) {
-          showError('OpenAI error: ' + data.error.message);
-          document.getElementById('progress-panel').className = 'progress-panel';
-          return;
-        }
-
-        var translation = data.choices[0].message.content;
-
-        setProgress('Done!', 100);
-
+        setProgress('Translation complete!', 100);
         setTimeout(function() {
           document.getElementById('progress-panel').className = 'progress-panel';
-          document.getElementById('result-content').textContent = translation;
-          document.getElementById('result-panel').className = 'result-panel visible';
-        }, 600);
+        }, 1000);
 
       } catch (err) {
         showError('Something went wrong: ' + err.message);
@@ -547,10 +505,8 @@ header {
     }
 
     function downloadResult() {
-      var text = document.getElementById('result-content').textContent;
-      if (!text) return;
-
-      var blob = new Blob([text], { type: 'text/plain' });
+      if (!allTranslations.length) return;
+      var blob = new Blob([allTranslations.join('\n\n---\n\n')], { type: 'text/plain' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
@@ -559,7 +515,6 @@ header {
       URL.revokeObjectURL(url);
     }
 
-    // Drag and drop
     var zone = document.getElementById('upload-zone');
     zone.addEventListener('dragover', function(e) {
       e.preventDefault();
