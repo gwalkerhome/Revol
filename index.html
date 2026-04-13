@@ -136,21 +136,112 @@ header {
   line-height: 1.6;
 }
 
+/* Main paths */
+.paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.path-card {
+  border-radius: 24px;
+  padding: 40px 32px;
+  text-decoration: none;
+  color: #f0f0ff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.path-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+}
+
+.path-card.new-topic {
+  background: linear-gradient(135deg, #1a1a2e, #0f1a2e);
+  border: 1px solid rgba(77,150,255,0.2);
+}
+
+.path-card.new-topic::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4d96ff, #a78bfa);
+}
+
+.path-card.my-topics {
+  background: linear-gradient(135deg, #1a1a2e, #0f2a1a);
+  border: 1px solid rgba(107,203,119,0.2);
+}
+
+.path-card.my-topics::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6bcb77, #4d96ff);
+}
+
+.path-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.path-card h2 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.path-card.new-topic h2 { color: #4d96ff; }
+.path-card.my-topics h2 { color: #6bcb77; }
+
+.path-card p {
+  font-size: 0.95rem;
+  color: #888aaa;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.path-arrow {
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.path-card.new-topic .path-arrow { color: #4d96ff; }
+.path-card.my-topics .path-arrow { color: #6bcb77; }
+
+/* Feature cards */
+.features-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888aaa;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 48px;
-  animation: fadeUp 0.6s 0.15s ease both;
+  animation: fadeUp 0.6s 0.25s ease both;
 }
 
 .card {
   background: #1a1a2e;
-  border-radius: 20px;
-  padding: 32px 24px;
+  border-radius: 16px;
+  padding: 24px 20px;
   border: 1px solid rgba(255,255,255,0.07);
-  cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
 }
@@ -159,108 +250,30 @@ header {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 20px 20px 0 0;
+  height: 2px;
+  border-radius: 16px 16px 0 0;
 }
 
 .card:nth-child(1)::before { background: #4d96ff; }
 .card:nth-child(2)::before { background: #ffd93d; }
 .card:nth-child(3)::before { background: #6bcb77; }
 
-.card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255,255,255,0.18);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
+.card-icon { font-size: 1.8rem; margin-bottom: 12px; display: block; }
 
-.card-icon {
-  font-size: 2.4rem;
-  margin-bottom: 16px;
-  display: block;
-}
-
-.card h2 {
-  font-size: 1.1rem;
+.card h3 {
+  font-size: 0.95rem;
   font-weight: 900;
-  margin-bottom: 8px;
-  letter-spacing: -0.3px;
+  margin-bottom: 6px;
 }
 
-.card:nth-child(1) h2 { color: #4d96ff; }
-.card:nth-child(2) h2 { color: #ffd93d; }
-.card:nth-child(3) h2 { color: #6bcb77; }
+.card:nth-child(1) h3 { color: #4d96ff; }
+.card:nth-child(2) h3 { color: #ffd93d; }
+.card:nth-child(3) h3 { color: #6bcb77; }
 
 .card p {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: #888aaa;
   line-height: 1.5;
-}
-
-.card .badge {
-  display: inline-block;
-  margin-top: 16px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.06);
-  color: #888aaa;
-}
-
-.upload-zone {
-  background: #1a1a2e;
-  border: 2px dashed rgba(255,255,255,0.12);
-  border-radius: 24px;
-  padding: 48px 32px;
-  text-align: center;
-  transition: border-color 0.2s, background 0.2s;
-  cursor: pointer;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-
-.upload-zone:hover {
-  border-color: #4d96ff;
-  background: rgba(77,150,255,0.05);
-}
-
-.upload-zone .upload-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-  display: block;
-}
-
-.upload-zone h3 {
-  font-size: 1.3rem;
-  font-weight: 900;
-  margin-bottom: 8px;
-}
-
-.upload-zone p {
-  color: #888aaa;
-  font-size: 0.95rem;
-  margin-bottom: 24px;
-}
-
-.btn {
-  display: inline-block;
-  padding: 14px 36px;
-  border-radius: 50px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 1rem;
-  font-weight: 900;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  letter-spacing: 0.5px;
-  background: linear-gradient(135deg, #4d96ff, #a78bfa);
-  color: white;
-}
-
-.btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 footer {
@@ -268,10 +281,15 @@ footer {
   margin-top: 64px;
   color: #888aaa;
   font-size: 0.8rem;
-  animation: fadeUp 0.6s 0.4s ease both;
+  animation: fadeUp 0.6s 0.3s ease both;
 }
 
 footer strong { color: #ffd93d; }
+
+@media (max-width: 600px) {
+  .paths { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+}
 
   </style>
 </head>
@@ -288,35 +306,41 @@ footer strong { color: #ffd93d; }
 
 <section class="hero">
   <h1>Your notes. Your language.<br><span class="line2">Your results.</span></h1>
-  <p>Upload your revision notes and Revol will translate them, quiz you, and help you improve — all powered by AI.</p>
+  <p>Upload revision notes in Spanish or Valenciano. Revol translates them, quizzes you, and tracks your progress.</p>
 </section>
 
+<div class="paths">
+  <a href="translate.html" class="path-card new-topic">
+    <span class="path-icon">📄</span>
+    <h2>New Topic</h2>
+    <p>Upload a PDF in Spanish or Valenciano and get a full English translation ready to study from.</p>
+    <div class="path-arrow">Start translating &#8594;</div>
+  </a>
+  <a href="library.html" class="path-card my-topics">
+    <span class="path-icon">📚</span>
+    <h2>My Topics</h2>
+    <p>Return to a topic you've already translated. Quiz yourself and track how you're improving.</p>
+    <div class="path-arrow">Go to my library &#8594;</div>
+  </a>
+</div>
+
+<div class="features-label">How it works</div>
 <div class="cards">
   <div class="card">
     <span class="card-icon">🌍</span>
-    <h2>Translate</h2>
-    <p>Turn Spanish or Valenciano revision notes into clear English, preserving layout and diagrams.</p>
-    <span class="badge">Coming soon</span>
+    <h3>Translate</h3>
+    <p>AI reads your PDF and produces a clear English translation, including diagrams and labels.</p>
   </div>
   <div class="card">
-    <span class="card-icon">⚡</span>
-    <h2>Quiz Me</h2>
-    <p>AI-generated questions from your notes — multiple choice, short answers, and more.</p>
-    <span class="badge">Coming soon</span>
+    <span class="card-icon">&#9889;</span>
+    <h3>Quiz Me</h3>
+    <p>AI generates varied questions from your notes — multiple choice, short answers, and exam-style.</p>
   </div>
   <div class="card">
-    <span class="card-icon">🎯</span>
-    <h2>Get Feedback</h2>
-    <p>Submit answers by typing or scanning. Get instant, helpful feedback on what to improve.</p>
-    <span class="badge">Coming soon</span>
+    <span class="card-icon">&#127919;</span>
+    <h3>Track Progress</h3>
+    <p>Every quiz is saved. Revol remembers what you found hard and focuses future quizzes on those areas.</p>
   </div>
-</div>
-
-<div class="upload-zone">
-  <span class="upload-icon">📄</span>
-  <h3>Drop your PDF here to get started</h3>
-  <p>Supports PDF revision notes in Spanish or Valenciano</p>
-  <button class="btn">Choose a file</button>
 </div>
 
 <footer>
