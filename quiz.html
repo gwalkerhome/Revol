@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Revol — Quiz Me</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-```
 body {
   background: #0f0f1a;
   color: #f0f0ff;
@@ -107,31 +109,26 @@ header {
 
 .page-title { margin-bottom: 32px; }
 
-.page-title h1 {
-  font-size: 2rem;
-  font-weight: 900;
-  margin-bottom: 8px;
-}
-
+.page-title h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
 .page-title h1 span { color: #ffd93d; }
 .page-title p { color: #888aaa; font-size: 0.95rem; }
 
-.panel {
-  background: #1a1a2e;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 28px;
+.topic-banner {
+  background: rgba(255,217,61,0.08);
+  border: 1px solid rgba(255,217,61,0.2);
+  border-radius: 16px;
+  padding: 16px 20px;
   margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.panel h2 {
-  font-size: 1rem;
-  font-weight: 900;
-  color: #ffd93d;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 16px;
-}
+.topic-banner .topic-icon { font-size: 1.5rem; }
+
+.topic-banner .topic-info { flex: 1; }
+.topic-banner .topic-info strong { display: block; font-size: 1rem; font-weight: 900; }
+.topic-banner .topic-info span { font-size: 0.8rem; color: #888aaa; }
 
 .api-panel {
   background: #1a1a2e;
@@ -195,36 +192,36 @@ header {
 
 .btn-save-key:hover { transform: scale(1.05); }
 
-textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 16px;
-  color: #f0f0ff;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  resize: vertical;
-  outline: none;
-  min-height: 160px;
-  transition: border-color 0.2s;
+.panel {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
 }
 
-textarea:focus { border-color: #ffd93d; }
+.panel h2 {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #ffd93d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
 
 .settings-row {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-top: 16px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .settings-row label {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #888aaa;
   font-weight: 700;
+  min-width: 160px;
 }
 
 .settings-row input[type="number"] {
@@ -240,8 +237,32 @@ textarea:focus { border-color: #ffd93d; }
   text-align: center;
 }
 
+.lang-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.lang-btn {
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: #888aaa;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: rgba(255,217,61,0.15);
+  border-color: #ffd93d;
+  color: #ffd93d;
+}
+
 .btn-generate {
-  display: inline-block;
+  width: 100%;
   padding: 14px 36px;
   border-radius: 50px;
   font-family: 'Nunito', sans-serif;
@@ -252,8 +273,7 @@ textarea:focus { border-color: #ffd93d; }
   transition: transform 0.15s, box-shadow 0.15s;
   background: linear-gradient(135deg, #ffd93d, #ff6b6b);
   color: #0f0f1a;
-  margin-top: 20px;
-  width: 100%;
+  margin-top: 8px;
 }
 
 .btn-generate:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
@@ -299,7 +319,6 @@ textarea:focus { border-color: #ffd93d; }
 
 .error-panel.visible { display: block; }
 
-/* Quiz UI */
 .quiz-panel { display: none; }
 .quiz-panel.visible { display: block; }
 
@@ -360,7 +379,6 @@ textarea:focus { border-color: #ffd93d; }
   color: #f0f0ff;
 }
 
-/* Multiple choice */
 .choices { display: flex; flex-direction: column; gap: 12px; }
 
 .choice-btn {
@@ -382,7 +400,6 @@ textarea:focus { border-color: #ffd93d; }
 .choice-btn.correct { border-color: #6bcb77; background: rgba(107,203,119,0.15); color: #6bcb77; }
 .choice-btn.incorrect { border-color: #ff6b6b; background: rgba(255,107,107,0.12); color: #ff6b6b; }
 
-/* Text answer */
 .answer-input {
   width: 100%;
   background: rgba(255,255,255,0.04);
@@ -449,7 +466,6 @@ textarea:focus { border-color: #ffd93d; }
 .btn-next.visible { display: block; }
 .btn-next:hover { transform: scale(1.02); }
 
-/* Results */
 .results-panel {
   background: #1a1a2e;
   border: 1px solid rgba(255,255,255,0.07);
@@ -472,21 +488,13 @@ textarea:focus { border-color: #ffd93d; }
   margin-bottom: 8px;
 }
 
-.results-label {
-  font-size: 1rem;
-  color: #888aaa;
-  margin-bottom: 32px;
-}
+.results-label { font-size: 1rem; color: #888aaa; margin-bottom: 32px; }
+.results-message { font-size: 1.1rem; font-weight: 700; margin-bottom: 32px; line-height: 1.5; }
 
-.results-message {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 32px;
-  line-height: 1.5;
-}
+.results-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 .btn-restart {
-  padding: 14px 36px;
+  padding: 14px 32px;
   border-radius: 50px;
   border: none;
   background: linear-gradient(135deg, #ffd93d, #ff6b6b);
@@ -496,13 +504,29 @@ textarea:focus { border-color: #ffd93d; }
   font-size: 1rem;
   cursor: pointer;
   transition: transform 0.15s;
-  margin-right: 12px;
 }
 
 .btn-restart:hover { transform: scale(1.05); }
 
+.btn-library {
+  padding: 14px 32px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: #f0f0ff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s;
+  display: inline-block;
+}
+
+.btn-library:hover { border-color: #ffd93d; }
+
 .btn-print {
-  padding: 14px 36px;
+  padding: 14px 32px;
   border-radius: 50px;
   border: 1px solid rgba(255,255,255,0.15);
   background: transparent;
@@ -516,11 +540,9 @@ textarea:focus { border-color: #ffd93d; }
 
 .btn-print:hover { border-color: #ffd93d; }
 
-/* Print styles */
 @media print {
   body { background: white; color: black; font-family: Arial, sans-serif; }
-  body::before, .blob { display: none; }
-  header, .api-panel, .setup-panel, .progress-panel, .quiz-panel, .results-panel { display: none !important; }
+  body::before, .blob, header, .api-panel, .panel, .progress-panel, .quiz-panel, .results-panel, .topic-banner { display: none !important; }
   .print-sheet { display: block !important; }
 }
 
@@ -535,15 +557,22 @@ textarea:focus { border-color: #ffd93d; }
   <div class="wrapper">
     <header>
       <a href="index.html" class="logo">Revol<span></span></a>
-      <a href="index.html" class="back-btn">&#8592; Back to home</a>
+      <a href="library.html" class="back-btn">&#8592; My Topics</a>
     </header>
 
 <div class="page-title">
   <h1>&#9889; <span>Quiz</span> yourself</h1>
-  <p>Paste your translated notes and Revol will generate a quiz to test your knowledge.</p>
+  <p>Test your knowledge and track your progress.</p>
 </div>
 
-<!-- API Key -->
+<div class="topic-banner" id="topic-banner" style="display:none">
+  <div class="topic-icon">📄</div>
+  <div class="topic-info">
+    <strong id="topic-banner-name"></strong>
+    <span>Loaded from your library</span>
+  </div>
+</div>
+
 <div class="api-panel">
   <label>OpenAI Key</label>
   <input type="password" id="api-key-input" placeholder="Paste your API key here" />
@@ -551,18 +580,22 @@ textarea:focus { border-color: #ffd93d; }
   <span class="api-status empty" id="api-status">No key saved</span>
 </div>
 
-<!-- Setup -->
-<div class="panel setup-panel" id="setup-panel">
-  <h2>Your notes</h2>
-  <textarea id="notes-input" placeholder="Paste your translated revision notes here..."></textarea>
+<div class="panel" id="setup-panel">
+  <h2>Quiz settings</h2>
   <div class="settings-row">
-    <label>Number of questions:</label>
+    <label>Number of questions</label>
     <input type="number" id="question-count" value="10" min="1" max="30" />
   </div>
-  <button class="btn-generate" onclick="generateQuiz()">Generate Quiz</button>
+  <div class="settings-row">
+    <label>Question language</label>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">English</button>
+      <button class="lang-btn" id="lang-es" onclick="setLang('es')">Spanish</button>
+    </div>
+  </div>
+  <button class="btn-generate" id="btn-generate" onclick="generateQuiz()">Generate Quiz</button>
 </div>
 
-<!-- Progress -->
 <div class="progress-panel" id="progress-panel">
   <div class="progress-label" id="progress-label">Generating your quiz...</div>
   <div class="progress-bar-track">
@@ -570,10 +603,8 @@ textarea:focus { border-color: #ffd93d; }
   </div>
 </div>
 
-<!-- Error -->
 <div class="error-panel" id="error-panel"></div>
 
-<!-- Quiz -->
 <div class="quiz-panel" id="quiz-panel">
   <div class="quiz-progress-row">
     <span class="quiz-counter" id="quiz-counter">Question 1 of 10</span>
@@ -582,7 +613,6 @@ textarea:focus { border-color: #ffd93d; }
   <div class="quiz-progress-bar-track">
     <div class="quiz-progress-bar-fill" id="quiz-progress-bar"></div>
   </div>
-
   <div class="question-card">
     <div class="question-text" id="question-text"></div>
     <div id="question-input-area"></div>
@@ -591,26 +621,32 @@ textarea:focus { border-color: #ffd93d; }
   </div>
 </div>
 
-<!-- Results -->
 <div class="results-panel" id="results-panel">
   <div class="results-score" id="results-score">8/10</div>
   <div class="results-label">questions answered correctly</div>
   <div class="results-message" id="results-message"></div>
-  <button class="btn-restart" onclick="restartQuiz()">Try Again</button>
-  <button class="btn-print" onclick="printQuiz()">Print Quiz</button>
+  <div class="results-buttons">
+    <button class="btn-restart" onclick="restartQuiz()">Try Again</button>
+    <a href="library.html" class="btn-library">My Topics</a>
+    <button class="btn-print" onclick="window.print()">Print Quiz</button>
+  </div>
 </div>
 
   </div>
 
-  <!-- Print sheet (hidden on screen) -->
-
   <div class="print-sheet" id="print-sheet"></div>
 
   <script>
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.database();
+
     var questions = [];
     var currentQ = 0;
     var score = 0;
-    var userAnswers = [];
+    var questionResults = [];
+    var selectedLang = 'en';
+    var topicKey = '';
+    var topicData = null;
 
     window.onload = function() {
       var saved = localStorage.getItem('revol_api_key');
@@ -618,6 +654,14 @@ textarea:focus { border-color: #ffd93d; }
         document.getElementById('api-key-input').value = saved;
         document.getElementById('api-status').textContent = 'Key saved';
         document.getElementById('api-status').className = 'api-status saved';
+      }
+
+      topicKey = localStorage.getItem('revol_quiz_topic_key') || '';
+      var topicJson = localStorage.getItem('revol_quiz_topic');
+      if (topicJson) {
+        topicData = JSON.parse(topicJson);
+        document.getElementById('topic-banner').style.display = 'flex';
+        document.getElementById('topic-banner-name').textContent = topicData.name;
       }
     };
 
@@ -627,6 +671,12 @@ textarea:focus { border-color: #ffd93d; }
       localStorage.setItem('revol_api_key', key);
       document.getElementById('api-status').textContent = 'Key saved';
       document.getElementById('api-status').className = 'api-status saved';
+    }
+
+    function setLang(lang) {
+      selectedLang = lang;
+      document.getElementById('lang-en').className = lang === 'en' ? 'lang-btn active' : 'lang-btn';
+      document.getElementById('lang-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
     }
 
     function setProgress(label, percent) {
@@ -646,18 +696,27 @@ textarea:focus { border-color: #ffd93d; }
     }
 
     async function generateQuiz() {
-      var notes = document.getElementById('notes-input').value.trim();
-      var count = parseInt(document.getElementById('question-count').value) || 10;
       var key = localStorage.getItem('revol_api_key');
-
       if (!key) { showError('Please save your OpenAI API key first.'); return; }
-      if (!notes) { showError('Please paste your revision notes first.'); return; }
+      if (!topicData) { showError('No topic loaded. Please go to My Topics and select a topic.'); return; }
+
+      var count = parseInt(document.getElementById('question-count').value) || 10;
+      var langLabel = selectedLang === 'es' ? 'Spanish' : 'English';
 
       hideError();
       setProgress('Generating your quiz...', 30);
       document.getElementById('setup-panel').style.display = 'none';
 
-      var prompt = 'You are an experienced teacher creating a revision quiz for a 13-year-old English-speaking student studying in Spain. The student has the following revision notes:\n\n' + notes + '\n\nCreate exactly ' + count + ' quiz questions based on these notes. Use a variety of question types to prepare the student for school exams:\n- Multiple choice questions (provide exactly 4 options labelled A, B, C, D)\n- One word answer questions\n- Short answer questions (2-3 sentences expected)\n- At least one longer exam-style question requiring a paragraph answer\n\nReturn ONLY a JSON array with no other text, preamble or explanation. Each object must have these fields:\n- type: either "multiple_choice", "one_word", "short_answer", or "long_answer"\n- question: the question text\n- choices: array of 4 strings (only for multiple_choice, otherwise omit)\n- correct_answer: the correct answer or for multiple_choice the correct letter (A, B, C or D)\n- explanation: a brief explanation of the correct answer to show as feedback\n\nMake the questions varied and do not make them identical to any previous set.';
+      var quizHistory = topicData.quizHistory ? Object.values(topicData.quizHistory) : [];
+      var historyNote = '';
+      if (quizHistory.length) {
+        var lastAttempt = quizHistory[quizHistory.length - 1];
+        if (lastAttempt.weakAreas && lastAttempt.weakAreas.length) {
+          historyNote = 'In previous quizzes this student struggled with: ' + lastAttempt.weakAreas.join(', ') + '. Start with 2-3 questions on topics they previously answered correctly to build confidence, then introduce questions on their weaker areas.';
+        }
+      }
+
+      var prompt = 'You are an experienced teacher creating a revision quiz for a 13-year-old English-speaking student studying Physics and Chemistry in Spain. The student has these revision notes:\n\n' + topicData.translation + '\n\nCreate exactly ' + count + ' quiz questions in ' + langLabel + '. Use a variety of question types:\n- Multiple choice questions (exactly 4 options labelled A, B, C, D)\n- One word answer questions\n- Short answer questions (2-3 sentences expected)\n- At least one longer exam-style question requiring a paragraph answer\n\n' + historyNote + '\n\nReturn ONLY a valid JSON array with no other text. Each object must have:\n- type: "multiple_choice", "one_word", "short_answer", or "long_answer"\n- question: the question text\n- choices: array of 4 strings (only for multiple_choice)\n- correct_answer: the correct answer or correct letter (A, B, C or D) for multiple choice\n- explanation: brief explanation of the correct answer\n- topic_area: a short label for what topic this question covers (e.g. "atomic structure")\n\nMake the questions varied. Do not make them identical to a previous set.';
 
       try {
         var response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -669,14 +728,11 @@ textarea:focus { border-color: #ffd93d; }
           body: JSON.stringify({
             model: 'gpt-4o',
             max_tokens: 3000,
-            messages: [
-              { role: 'user', content: prompt }
-            ]
+            messages: [{ role: 'user', content: prompt }]
           })
         });
 
         setProgress('Building your quiz...', 75);
-
         var data = await response.json();
         if (data.error) { throw new Error(data.error.message); }
 
@@ -685,7 +741,6 @@ textarea:focus { border-color: #ffd93d; }
         questions = JSON.parse(raw);
 
         setProgress('Ready!', 100);
-
         setTimeout(function() {
           document.getElementById('progress-panel').className = 'progress-panel';
           startQuiz();
@@ -701,7 +756,7 @@ textarea:focus { border-color: #ffd93d; }
     function startQuiz() {
       currentQ = 0;
       score = 0;
-      userAnswers = [];
+      questionResults = [];
       document.getElementById('quiz-panel').className = 'quiz-panel visible';
       document.getElementById('results-panel').className = 'results-panel';
       showQuestion();
@@ -720,12 +775,12 @@ textarea:focus { border-color: #ffd93d; }
         short_answer: 'Short Answer',
         long_answer: 'Extended Answer'
       };
+
       document.getElementById('quiz-type-badge').textContent = typeLabels[q.type] || q.type;
       document.getElementById('question-text').textContent = q.question;
 
       var area = document.getElementById('question-input-area');
       area.innerHTML = '';
-
       document.getElementById('feedback-box').className = 'feedback-box';
       document.getElementById('btn-next').className = 'btn-next';
 
@@ -767,15 +822,14 @@ textarea:focus { border-color: #ffd93d; }
       if (isCorrect) {
         btn.className = 'choice-btn correct';
         score++;
-        userAnswers.push({ question: q.question, answer: letter, correct: true });
+        questionResults.push({ topic: q.topic_area, correct: true });
         showFeedback(true, 'Correct! ' + q.explanation);
       } else {
         btn.className = 'choice-btn incorrect';
         allBtns.forEach(function(b) {
-          var l = b.textContent.charAt(0);
-          if (l === q.correct_answer) { b.className = 'choice-btn correct'; }
+          if (b.textContent.charAt(0) === q.correct_answer) { b.className = 'choice-btn correct'; }
         });
-        userAnswers.push({ question: q.question, answer: letter, correct: false });
+        questionResults.push({ topic: q.topic_area, correct: false });
         showFeedback(false, 'Not quite. The correct answer is ' + q.correct_answer + '. ' + q.explanation);
       }
     }
@@ -803,7 +857,7 @@ textarea:focus { border-color: #ffd93d; }
             messages: [
               {
                 role: 'system',
-                content: 'You are a helpful teacher marking a student revision answer. Be encouraging. Accept answers that are correct in substance even if not word-perfect. Reply in this exact format with no other text:\nRESULT: correct OR partial OR incorrect\nFEEDBACK: one or two sentences of helpful feedback explaining what was good or what the correct answer is.'
+                content: 'You are a helpful teacher marking a student revision answer. Be encouraging. Accept answers correct in substance even if not word-perfect. Reply in this exact format with no other text:\nRESULT: correct OR partial OR incorrect\nFEEDBACK: one or two sentences of helpful feedback.'
               },
               {
                 role: 'user',
@@ -816,16 +870,15 @@ textarea:focus { border-color: #ffd93d; }
         var data = await response.json();
         var reply = data.choices[0].message.content.trim();
         var resultMatch = reply.match(/RESULT:\s*(correct|partial|incorrect)/i);
-        var feedbackMatch = reply.match(/FEEDBACK:\s*(.+)/i);
+        var feedbackMatch = reply.match(/FEEDBACK:\s*(.+)/is);
 
         var result = resultMatch ? resultMatch[1].toLowerCase() : 'incorrect';
-        var feedback = feedbackMatch ? feedbackMatch[1] : q.explanation;
-
-        if (result === 'correct') { score++; }
-        userAnswers.push({ question: q.question, answer: answer, correct: result === 'correct' });
+        var feedback = feedbackMatch ? feedbackMatch[1].trim() : q.explanation;
 
         var isCorrect = result === 'correct';
         var isPartial = result === 'partial';
+        if (isCorrect) { score++; }
+        questionResults.push({ topic: q.topic_area, correct: isCorrect });
         showFeedback(isCorrect, feedback, isPartial);
 
       } catch (err) {
@@ -840,9 +893,8 @@ textarea:focus { border-color: #ffd93d; }
       var icon = correct ? '✓ ' : partial ? '~ ' : '✗ ';
       box.textContent = icon + message;
       box.className = 'feedback-box visible ' + (correct ? 'correct' : partial ? 'partial' : 'incorrect');
-      document.getElementById('btn-next').className = 'btn-next visible';
-
       var isLast = currentQ >= questions.length - 1;
+      document.getElementById('btn-next').className = 'btn-next visible';
       document.getElementById('btn-next').textContent = isLast ? 'See Results' : 'Next Question →';
     }
 
@@ -871,11 +923,24 @@ textarea:focus { border-color: #ffd93d; }
       document.getElementById('results-message').textContent = msg;
       document.getElementById('results-panel').className = 'results-panel visible';
 
+      var weakAreas = questionResults.filter(function(r) { return !r.correct; }).map(function(r) { return r.topic; }).filter(function(t) { return t; });
+
+      if (topicKey) {
+        var historyEntry = {
+          date: new Date().toISOString(),
+          score: { correct: score, total: total, percent: percent },
+          weakAreas: weakAreas,
+          language: selectedLang
+        };
+        db.ref('topics/' + topicKey + '/quizHistory').push(historyEntry);
+      }
+
       buildPrintSheet();
     }
 
     function buildPrintSheet() {
-      var html = '<h1 style="font-size:18px; margin-bottom:4px;">Revol Revision Quiz</h1>';
+      var name = topicData ? topicData.name : 'Revision Quiz';
+      var html = '<h1 style="font-size:18px; margin-bottom:4px;">Revol Revision Quiz — ' + name + '</h1>';
       html += '<p style="font-size:12px; margin-bottom:20px; color:#555;">Name: _________________________ &nbsp;&nbsp; Date: _______________ &nbsp;&nbsp; Score: ____/' + questions.length + '</p>';
       html += '<hr style="margin-bottom:20px;">';
 
@@ -901,17 +966,13 @@ textarea:focus { border-color: #ffd93d; }
       document.getElementById('print-sheet').innerHTML = html;
     }
 
-    function printQuiz() {
-      window.print();
-    }
-
     function restartQuiz() {
       document.getElementById('results-panel').className = 'results-panel';
       document.getElementById('setup-panel').style.display = 'block';
       questions = [];
       currentQ = 0;
       score = 0;
-      userAnswers = [];
+      questionResults = [];
     }
   </script>
 
