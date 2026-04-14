@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Revol - Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0d0d1a;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  padding: 24px 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.logo span:nth-child(1) { color: #7b6ef6; }
+.logo span:nth-child(2) { color: #e8a838; }
+.logo span:nth-child(3) { color: #ffffff; }
+
+.back-link {
+  color: #aaaaaa;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+h1 em {
+  font-style: normal;
+  color: #a78bfa;
+}
+
+.subtitle {
+  color: #888888;
+  font-size: 0.95rem;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  color: #cccccc;
+  margin-bottom: 8px;
+}
+
+.field input {
+  width: 100%;
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.field input:focus {
+  border-color: #7b6ef6;
+}
+
+.save-btn {
+  background: #7b6ef6;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.save-btn:active {
+  opacity: 0.85;
+}
+
+.confirm {
+  display: none;
+  text-align: center;
+  color: #4ade80;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Revo</span><span>l</span><span>&#8226;</span>
+    </div>
+    <a class="back-link" href="index.html">&#8592; Back to home</a>
+  </header>
+
+  <h1>&#9881;&#65039; <em>Settings</em></h1>
+  <p class="subtitle">Your API keys are saved on this device only.</p>
+
+  <div class="card">
+    <div class="card-title">API Keys</div>
+
+<div class="field">
+  <label for="openai-key">OpenAI Key</label>
+  <input type="password" id="openai-key" placeholder="sk-..." />
+</div>
+
+<div class="field">
+  <label for="gemini-key">Gemini Key</label>
+  <input type="password" id="gemini-key" placeholder="AIza..." />
+</div>
+
+<button class="save-btn" onclick="saveKeys()">Save keys</button>
+<div class="confirm" id="confirm">Keys saved to this device</div>
+
+  </div>
+
+  <script>
+    // Load existing keys on page open
+    const openaiInput = document.getElementById('openai-key');
+    const geminiInput = document.getElementById('gemini-key');
+
+    const savedOpenAI = localStorage.getItem('openai_key');
+    const savedGemini = localStorage.getItem('gemini_key');
+
+    if (savedOpenAI) openaiInput.value = savedOpenAI;
+    if (savedGemini) geminiInput.value = savedGemini;
+
+    function saveKeys() {
+      const openaiVal = openaiInput.value.trim();
+      const geminiVal = geminiInput.value.trim();
+
+      if (openaiVal) localStorage.setItem('openai_key', openaiVal);
+      if (geminiVal) localStorage.setItem('gemini_key', geminiVal);
+
+      const confirm = document.getElementById('confirm');
+      confirm.style.display = 'block';
+      setTimeout(() => confirm.style.display = 'none', 3000);
+    }
+  </script>
+
+</body>
+</html>
