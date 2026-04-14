@@ -291,6 +291,12 @@ margin-top: 24px;
 font-size: 1rem;
 font-weight: 900;
 color: #4d96ff;
+margin-bottom: 6px;
+}
+
+.save-panel p {
+font-size: 0.85rem;
+color: #888aaa;
 margin-bottom: 16px;
 }
 
@@ -316,22 +322,6 @@ transition: border-color 0.2s;
 }
 
 .save-row input:focus { border-color: #4d96ff; }
-
-.btn-save-topic {
-padding: 12px 28px;
-border-radius: 50px;
-border: none;
-background: linear-gradient(135deg, #4d96ff, #a78bfa);
-color: white;
-font-family: ‘Nunito’, sans-serif;
-font-weight: 900;
-font-size: 0.95rem;
-cursor: pointer;
-transition: transform 0.15s;
-white-space: nowrap;
-}
-
-.btn-save-topic:hover { transform: scale(1.05); }
 
 .save-confirm {
 margin-top: 12px;
@@ -404,12 +394,12 @@ display: none;
   <div class="result-content" id="result-content"></div>
 
   <div class="save-panel">
-    <h3>💾 Save this topic to your library</h3>
+    <h3>💾 Saved to your library</h3>
+    <p>You can rename this topic if needed.</p>
     <div class="save-row">
-      <input type="text" id="topic-name-input" placeholder="Topic name..." />
-      <button class="btn-save-topic" onclick="saveTopic()">Save to Library</button>
+      <input type="text" id="topic-name-input" placeholder="Topic name..." onchange="renameTopic()" />
     </div>
-    <div class="save-confirm" id="save-confirm">✓ Saved! You can find this in My Topics.</div>
+    <div class="save-confirm" id="save-confirm">✓ Saved to My Topics.</div>
   </div>
 </div>
 
@@ -422,7 +412,9 @@ display: none;
     var db = firebase.database();
 
     var allTranslations = [];
+    var allPageImages = []; // original page base64 images for Gemini
     var thumbnailBase64 = '';
+    var savedTopicKey = null; // Firebase key once auto-saved
 
     window.onload = function() {
       var key = localStorage.getItem('openai_key');
@@ -519,8 +511,31 @@ display: none;
         var data = await response.json();
         return data.choices[0].message.content.trim();
       } catch(e) {
-        return '';
+        return 'Untitled Topic';
       }
+    }
+
+    async function autoSaveTopic(name) {
+      var topic = {
+        name: name,
+        date: new Date().toISOString(),
+        translation: allTranslations.join('\n\n---\n\n'),
+        thumbnail: thumbnailBase64,
+        englishPageImages: [],
+        quizHistory: []
+      };
+
+      var ref = await db.ref('topics').push(topic);
+      savedTopicKey = ref.key;
+      document.getElementById('save-confirm').className = 'save-confirm visible';
+      return savedTopicKey;
+    }
+
+    function renameTopic() {
+      if (!savedTopicKey) return;
+      var newName = document.getElementById('topic-name-input').value.trim();
+      if (!newName) return;
+      db.ref('topics/' + savedTopicKey + '/name').set(newName);
     }
 
     async function handleFile(event) {
@@ -535,7 +550,9 @@ display: none;
 
       hideError();
       allTranslations = [];
+      allPageImages = [];
       thumbnailBase64 = '';
+      savedTopicKey = null;
       document.getElementById('result-content').innerHTML = '';
       document.getElementById('result-panel').className = 'result-panel';
       document.getElementById('save-confirm').className = 'save-confirm';
@@ -550,10 +567,11 @@ display: none;
         document.getElementById('result-panel').className = 'result-panel visible';
 
         for (var i = 1; i <= totalPages; i++) {
-          setProgress('Translating page ' + i + ' of ' + totalPages + '...', 5 + (i / totalPages * 85));
+          setProgress('Translating page ' + i + ' of ' + totalPages + '...', 5 + (i / totalPages * 80));
 
           var page = await pdf.getPage(i);
           var base64 = await pageToBase64(page, 2);
+          allPageImages.push(base64); // store for Gemini later
 
           if (i === 1) {
             thumbnailBase64 = await pageToBase64(page, 0.3);
@@ -566,11 +584,11 @@ display: none;
           document.getElementById('result-content').innerHTML += divider + '<div class="page-label">Page ' + i + '</div><div>' + translation.replace(/\n/g, '<br>') + '</div>';
         }
 
-        setProgress('Suggesting topic name...', 95);
+        setProgress('Naming and saving...', 90);
         var suggestedName = await suggestTopicName(allTranslations[0], key);
-        if (suggestedName) {
-          document.getElementById('topic-name-input').value = suggestedName;
-        }
+        document.getElementById('topic-name-input').value = suggestedName;
+
+        await autoSaveTopic(suggestedName);
 
         setProgress('Done!', 100);
         setTimeout(function() {
@@ -584,7 +602,7 @@ display: none;
     }
 
     async function makeEnglishPDF() {
-      if (!allTranslations.length) { alert('No translation to convert yet.'); return; }
+      if (!allPageImages.length) { alert('No pages to convert yet.'); return; }
 
       var geminiKey = localStorage.getItem('gemini_key');
       if (!geminiKey) {
@@ -592,62 +610,109 @@ display: none;
         return;
       }
 
-      // Open window immediately on user tap — Safari blocks window.open() after async calls
+      // Open window immediately — Safari blocks window.open() after async calls
       var printWindow = window.open('', '_blank');
       if (!printWindow) {
         alert('Please allow pop-ups for this site in Safari settings, then try again.');
         return;
       }
 
-      printWindow.document.write('<html><body style="font-family:sans-serif;padding:40px;color:#333;"><p>Generating your notes, please wait...</p></body></html>');
+      printWindow.document.write('<html><body style="font-family:sans-serif;padding:40px;color:#333;"><p>Generating your English PDF, please wait...</p></body></html>');
 
       var btn = document.getElementById('btn-pdf');
       btn.disabled = true;
-      btn.textContent = 'Generating PDF...';
-
-      var fullText = allTranslations.join('\n\n---\n\n');
+      btn.textContent = 'Generating...';
 
       try {
-        var response = await fetch(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' + geminiKey,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: 'You are formatting revision notes for a student. Take the following translated text and reformat it into clean, well-structured revision notes in English. Use clear headings, numbered lists where appropriate, and make it easy to read and study from. Do not add new content — only reformat and tidy what is there. Return plain text only, no markdown symbols.\n\n' + fullText
-                }]
-              }]
-            })
+        // Check if English images already saved in Firebase
+        var existingImages = [];
+        if (savedTopicKey) {
+          var snapshot = await db.ref('topics/' + savedTopicKey + '/englishPageImages').once('value');
+          var stored = snapshot.val();
+          if (stored && stored.length === allPageImages.length) {
+            existingImages = stored;
           }
-        );
+        }
 
-        var data = await response.json();
-        if (data.error) { throw new Error(data.error.message); }
+        var englishImages = [];
 
-        var formatted = data.candidates[0].content.parts[0].text;
+        if (existingImages.length) {
+          // Use cached images — no Gemini call needed
+          englishImages = existingImages;
+        } else {
+          // Generate each page image via Gemini 2.5 Flash Image
+          for (var i = 0; i < allPageImages.length; i++) {
+            printWindow.document.body.innerHTML = '<p style="font-family:sans-serif;padding:40px;">Generating page ' + (i + 1) + ' of ' + allPageImages.length + ', please wait...</p>';
 
-        printWindow.document.open();
-        printWindow.document.write(
-          '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-          '<title>Revol - English Notes</title>' +
-          '<style>' +
-          'body { font-family: Georgia, serif; max-width: 700px; margin: 40px auto; font-size: 14px; line-height: 1.8; color: #111; }' +
-          'h1, h2, h3 { font-family: Arial, sans-serif; }' +
-          'hr { margin: 24px 0; border: none; border-top: 1px solid #ccc; }' +
-          '@media print { body { margin: 20px; } }' +
-          '</style></head><body>' +
+            var response = await fetch(
+              'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=' + geminiKey,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{
+                    parts: [
+                      {
+                        inline_data: {
+                          mime_type: 'image/jpeg',
+                          data: allPageImages[i]
+                        }
+                      },
+                      {
+                        text: 'Recreate this page exactly as it appears, preserving all layout, diagrams, charts, tables and formatting. Translate every piece of text into clear English. Keep all visual elements, colours and structure identical. Return only the recreated image.'
+                      }
+                    ]
+                  }],
+                  generationConfig: {
+                    responseModalities: ['IMAGE', 'TEXT']
+                  }
+                })
+              }
+            );
 
-      '<h1>Revision Notes</h1>' +
-      '<p style="color:#888; font-size:12px; margin-bottom:24px;">Generated by Revol</p><hr>' +
-      '<pre style="white-space: pre-wrap; font-family: Georgia, serif; font-size: 14px; line-height: 1.8;">' +
-      formatted.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
-      '</pre></body></html>'
-    );
+            var data = await response.json();
+            if (data.error) { throw new Error(data.error.message); }
+
+            // Extract the image from the response
+            var parts = data.candidates[0].content.parts;
+            var imageData = null;
+            for (var p = 0; p < parts.length; p++) {
+              if (parts[p].inlineData) {
+                imageData = parts[p].inlineData.data;
+                break;
+              }
+            }
+
+            if (!imageData) { throw new Error('No image returned for page ' + (i + 1)); }
+            englishImages.push(imageData);
+          }
+
+          // Save generated images to Firebase so we never regenerate them
+          if (savedTopicKey) {
+            await db.ref('topics/' + savedTopicKey + '/englishPageImages').set(englishImages);
+          }
+        }
+
+        // Build printable HTML with one image per page
+        var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Revol - English Notes</title><style>';
+        html += 'body { margin: 0; padding: 0; }';
+        html += '.page { width: 100%; page-break-after: always; }';
+        html += '.page img { width: 100%; display: block; }';
+        html += '.page:last-child { page-break-after: avoid; }';
+        html += '@media print { body { margin: 0; } }';
+        html += '</style></head><body>';
+
+    for (var j = 0; j < englishImages.length; j++) {
+      html += '<div class="page"><img src="data:image/png;base64,' + englishImages[j] + '" /></div>';
+    }
+
+    html += '</body></html>';
+
+    printWindow.document.open();
+    printWindow.document.write(html);
     printWindow.document.close();
     printWindow.focus();
-    setTimeout(function() { printWindow.print(); }, 600);
+    setTimeout(function() { printWindow.print(); }, 800);
 
   } catch (err) {
     printWindow.close();
@@ -656,26 +721,6 @@ display: none;
     btn.disabled = false;
     btn.textContent = 'Make English PDF';
   }
-}
-
-function saveTopic() {
-  var name = document.getElementById('topic-name-input').value.trim();
-  if (!name) { alert('Please enter a topic name.'); return; }
-  if (!allTranslations.length) { alert('No translation to save yet.'); return; }
-
-  var topic = {
-    name: name,
-    date: new Date().toISOString(),
-    translation: allTranslations.join('\n\n---\n\n'),
-    thumbnail: thumbnailBase64,
-    quizHistory: []
-  };
-
-  db.ref('topics').push(topic).then(function() {
-    document.getElementById('save-confirm').className = 'save-confirm visible';
-  }).catch(function(err) {
-    alert('Save failed: ' + err.message);
-  });
 }
 
 function downloadResult() {
