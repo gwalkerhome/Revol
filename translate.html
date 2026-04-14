@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Revol — Translate</title>
+  <title>Revol - Translate</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -14,96 +14,96 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #0f0f1a;
-  color: #f0f0ff;
-  font-family: 'Nunito', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
+background: #0f0f1a;
+color: #f0f0ff;
+font-family: ‘Nunito’, sans-serif;
+min-height: 100vh;
+overflow-x: hidden;
 }
 
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(77,150,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(77,150,255,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: gridMove 20s linear infinite;
-  pointer-events: none;
-  z-index: 0;
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+linear-gradient(rgba(77,150,255,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(77,150,255,0.04) 1px, transparent 1px);
+background-size: 40px 40px;
+animation: gridMove 20s linear infinite;
+pointer-events: none;
+z-index: 0;
 }
 
 @keyframes gridMove {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(40px); }
+0% { transform: translateY(0); }
+100% { transform: translateY(40px); }
 }
 
 .blob {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.18;
-  pointer-events: none;
-  z-index: 0;
-  animation: blobFloat 8s ease-in-out infinite alternate;
+position: fixed;
+border-radius: 50%;
+filter: blur(80px);
+opacity: 0.18;
+pointer-events: none;
+z-index: 0;
+animation: blobFloat 8s ease-in-out infinite alternate;
 }
 
 .blob1 { width: 400px; height: 400px; background: #4d96ff; top: -100px; left: -100px; }
 .blob2 { width: 350px; height: 350px; background: #ff6b6b; bottom: -80px; right: -80px; animation-delay: -3s; }
 
 @keyframes blobFloat {
-  0% { transform: translate(0,0) scale(1); }
-  100% { transform: translate(30px, 20px) scale(1.08); }
+0% { transform: translate(0,0) scale(1); }
+100% { transform: translate(30px, 20px) scale(1.08); }
 }
 
 .wrapper {
-  position: relative;
-  z-index: 1;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
+position: relative;
+z-index: 1;
+max-width: 860px;
+margin: 0 auto;
+padding: 40px 24px 80px;
 }
 
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 48px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 48px;
 }
 
 .logo {
-  font-family: 'Space Mono', monospace;
-  font-size: 1.6rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #4d96ff, #ff6b6b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-decoration: none;
+font-family: ‘Space Mono’, monospace;
+font-size: 1.6rem;
+font-weight: 700;
+background: linear-gradient(135deg, #4d96ff, #ff6b6b);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-decoration: none;
 }
 
 .logo span {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: #ffd93d;
-  border-radius: 50%;
-  margin-left: 3px;
-  vertical-align: middle;
-  animation: pulse 1.5s ease-in-out infinite;
+display: inline-block;
+width: 8px;
+height: 8px;
+background: #ffd93d;
+border-radius: 50%;
+margin-left: 3px;
+vertical-align: middle;
+animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.7; }
+0%, 100% { transform: scale(1); opacity: 1; }
+50% { transform: scale(1.4); opacity: 0.7; }
 }
 
 .back-btn {
-  font-size: 0.85rem;
-  color: #888aaa;
-  text-decoration: none;
-  transition: color 0.2s;
+font-size: 0.85rem;
+color: #888aaa;
+text-decoration: none;
+transition: color 0.2s;
 }
 
 .back-btn:hover { color: #f0f0ff; }
@@ -111,91 +111,44 @@ header {
 .page-title { margin-bottom: 32px; }
 
 .page-title h1 {
-  font-size: 2rem;
-  font-weight: 900;
-  margin-bottom: 8px;
+font-size: 2rem;
+font-weight: 900;
+margin-bottom: 8px;
 }
 
 .page-title h1 span { color: #4d96ff; }
 .page-title p { color: #888aaa; font-size: 0.95rem; }
 
-.api-panel {
-  background: #1a1a2e;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+.no-key-warning {
+background: rgba(255,107,107,0.1);
+border: 1px solid rgba(255,107,107,0.3);
+border-radius: 16px;
+padding: 16px 20px;
+color: #ff6b6b;
+font-size: 0.9rem;
+margin-bottom: 24px;
+display: none;
 }
 
-.api-panel label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #888aaa;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  white-space: nowrap;
+.no-key-warning a {
+color: #ff6b6b;
+font-weight: 700;
 }
-
-.api-panel input {
-  flex: 1;
-  min-width: 200px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: #f0f0ff;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.85rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.api-panel input:focus { border-color: #4d96ff; }
-
-.api-status {
-  font-size: 0.8rem;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.api-status.saved { background: rgba(107,203,119,0.15); color: #6bcb77; }
-.api-status.empty { background: rgba(255,107,107,0.15); color: #ff6b6b; }
-
-.btn-save-key {
-  padding: 10px 20px;
-  border-radius: 50px;
-  border: none;
-  background: linear-gradient(135deg, #4d96ff, #a78bfa);
-  color: white;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-
-.btn-save-key:hover { transform: scale(1.05); }
 
 .upload-zone {
-  background: #1a1a2e;
-  border: 2px dashed rgba(255,255,255,0.12);
-  border-radius: 24px;
-  padding: 48px 32px;
-  text-align: center;
-  transition: border-color 0.2s, background 0.2s;
-  cursor: pointer;
-  margin-bottom: 24px;
+background: #1a1a2e;
+border: 2px dashed rgba(255,255,255,0.12);
+border-radius: 24px;
+padding: 48px 32px;
+text-align: center;
+transition: border-color 0.2s, background 0.2s;
+cursor: pointer;
+margin-bottom: 24px;
 }
 
 .upload-zone:hover, .upload-zone.dragover {
-  border-color: #4d96ff;
-  background: rgba(77,150,255,0.05);
+border-color: #4d96ff;
+background: rgba(77,150,255,0.05);
 }
 
 .upload-zone .upload-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
@@ -203,17 +156,17 @@ header {
 .upload-zone p { color: #888aaa; font-size: 0.9rem; margin-bottom: 24px; }
 
 .btn-primary {
-  display: inline-block;
-  padding: 14px 36px;
-  border-radius: 50px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 1rem;
-  font-weight: 900;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.15s, box-shadow 0.15s;
-  background: linear-gradient(135deg, #4d96ff, #a78bfa);
-  color: white;
+display: inline-block;
+padding: 14px 36px;
+border-radius: 50px;
+font-family: ‘Nunito’, sans-serif;
+font-size: 1rem;
+font-weight: 900;
+cursor: pointer;
+border: none;
+transition: transform 0.15s, box-shadow 0.15s;
+background: linear-gradient(135deg, #4d96ff, #a78bfa);
+color: white;
 }
 
 .btn-primary:hover { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
@@ -221,164 +174,186 @@ header {
 #file-input { display: none; }
 
 .progress-panel {
-  background: #1a1a2e;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
-  display: none;
+background: #1a1a2e;
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 16px;
+padding: 24px;
+margin-bottom: 24px;
+display: none;
 }
 
 .progress-panel.visible { display: block; }
 .progress-label { font-size: 0.9rem; color: #888aaa; margin-bottom: 12px; }
 
 .progress-bar-track {
-  background: rgba(255,255,255,0.07);
-  border-radius: 99px;
-  height: 8px;
-  overflow: hidden;
+background: rgba(255,255,255,0.07);
+border-radius: 99px;
+height: 8px;
+overflow: hidden;
 }
 
 .progress-bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, #4d96ff, #a78bfa);
-  width: 0%;
-  transition: width 0.4s ease;
+height: 100%;
+border-radius: 99px;
+background: linear-gradient(90deg, #4d96ff, #a78bfa);
+width: 0%;
+transition: width 0.4s ease;
 }
 
 .result-panel {
-  background: #1a1a2e;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 32px;
-  margin-bottom: 24px;
-  display: none;
+background: #1a1a2e;
+border: 1px solid rgba(255,255,255,0.07);
+border-radius: 20px;
+padding: 32px;
+margin-bottom: 24px;
+display: none;
 }
 
 .result-panel.visible { display: block; }
 
 .result-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 12px;
-  flex-wrap: wrap;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 24px;
+gap: 12px;
+flex-wrap: wrap;
 }
 
 .result-header h2 { font-size: 1.2rem; font-weight: 900; color: #4d96ff; }
 
+.result-header-btns {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+}
+
 .btn-download {
-  padding: 10px 24px;
-  border-radius: 50px;
-  border: none;
-  background: linear-gradient(135deg, #6bcb77, #4d96ff);
-  color: white;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: transform 0.15s;
+padding: 10px 24px;
+border-radius: 50px;
+border: none;
+background: linear-gradient(135deg, #6bcb77, #4d96ff);
+color: white;
+font-family: ‘Nunito’, sans-serif;
+font-weight: 900;
+font-size: 0.9rem;
+cursor: pointer;
+transition: transform 0.15s;
 }
 
 .btn-download:hover { transform: scale(1.05); }
 
+.btn-pdf {
+padding: 10px 24px;
+border-radius: 50px;
+border: none;
+background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+color: #0f0f1a;
+font-family: ‘Nunito’, sans-serif;
+font-weight: 900;
+font-size: 0.9rem;
+cursor: pointer;
+transition: transform 0.15s;
+}
+
+.btn-pdf:hover { transform: scale(1.05); }
+.btn-pdf:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
 .result-content {
-  color: #f0f0ff;
-  font-size: 1rem;
-  line-height: 1.8;
-  word-break: break-word;
-  margin-bottom: 24px;
+color: #f0f0ff;
+font-size: 1rem;
+line-height: 1.8;
+word-break: break-word;
+margin-bottom: 24px;
 }
 
 .page-divider {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  margin: 24px 0;
+border: none;
+border-top: 1px solid rgba(255,255,255,0.08);
+margin: 24px 0;
 }
 
 .page-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #4d96ff;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 12px;
+font-size: 0.75rem;
+font-weight: 700;
+color: #4d96ff;
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-bottom: 12px;
 }
 
 .save-panel {
-  background: rgba(77,150,255,0.07);
-  border: 1px solid rgba(77,150,255,0.2);
-  border-radius: 16px;
-  padding: 24px;
-  margin-top: 24px;
+background: rgba(77,150,255,0.07);
+border: 1px solid rgba(77,150,255,0.2);
+border-radius: 16px;
+padding: 24px;
+margin-top: 24px;
 }
 
 .save-panel h3 {
-  font-size: 1rem;
-  font-weight: 900;
-  color: #4d96ff;
-  margin-bottom: 16px;
+font-size: 1rem;
+font-weight: 900;
+color: #4d96ff;
+margin-bottom: 16px;
 }
 
 .save-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
+display: flex;
+gap: 12px;
+flex-wrap: wrap;
+align-items: center;
 }
 
 .save-row input {
-  flex: 1;
-  min-width: 200px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: #f0f0ff;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s;
+flex: 1;
+min-width: 200px;
+background: rgba(255,255,255,0.05);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: 8px;
+padding: 12px 16px;
+color: #f0f0ff;
+font-family: ‘Nunito’, sans-serif;
+font-size: 0.95rem;
+outline: none;
+transition: border-color 0.2s;
 }
 
 .save-row input:focus { border-color: #4d96ff; }
 
 .btn-save-topic {
-  padding: 12px 28px;
-  border-radius: 50px;
-  border: none;
-  background: linear-gradient(135deg, #4d96ff, #a78bfa);
-  color: white;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: transform 0.15s;
-  white-space: nowrap;
+padding: 12px 28px;
+border-radius: 50px;
+border: none;
+background: linear-gradient(135deg, #4d96ff, #a78bfa);
+color: white;
+font-family: ‘Nunito’, sans-serif;
+font-weight: 900;
+font-size: 0.95rem;
+cursor: pointer;
+transition: transform 0.15s;
+white-space: nowrap;
 }
 
 .btn-save-topic:hover { transform: scale(1.05); }
 
 .save-confirm {
-  margin-top: 12px;
-  font-size: 0.9rem;
-  color: #6bcb77;
-  display: none;
+margin-top: 12px;
+font-size: 0.9rem;
+color: #6bcb77;
+display: none;
 }
 
 .save-confirm.visible { display: block; }
 
 .error-panel {
-  background: rgba(255,107,107,0.1);
-  border: 1px solid rgba(255,107,107,0.3);
-  border-radius: 16px;
-  padding: 20px 24px;
-  color: #ff6b6b;
-  font-size: 0.95rem;
-  margin-bottom: 24px;
-  display: none;
+background: rgba(255,107,107,0.1);
+border: 1px solid rgba(255,107,107,0.3);
+border-radius: 16px;
+padding: 20px 24px;
+color: #ff6b6b;
+font-size: 0.95rem;
+margin-bottom: 24px;
+display: none;
 }
 
 .error-panel.visible { display: block; }
@@ -400,17 +375,14 @@ header {
   <p>Upload a PDF in Spanish or Valenciano and get a clear English translation.</p>
 </div>
 
-<div class="api-panel">
-  <label>OpenAI Key</label>
-  <input type="password" id="api-key-input" placeholder="Paste your API key here" />
-  <button class="btn-save-key" onclick="saveKey()">Save</button>
-  <span class="api-status empty" id="api-status">No key saved</span>
+<div class="no-key-warning" id="no-key-warning">
+  No OpenAI key found. <a href="settings.html">Go to Settings</a> to add your key.
 </div>
 
 <div class="upload-zone" id="upload-zone">
   <span class="upload-icon">📄</span>
   <h3>Drop your PDF here</h3>
-  <p>Or click the button to choose a file from your computer</p>
+  <p>Or click the button to choose a file from your device</p>
   <button class="btn-primary" onclick="document.getElementById('file-input').click()">Choose a PDF</button>
   <input type="file" id="file-input" accept=".pdf" onchange="handleFile(event)" />
 </div>
@@ -427,7 +399,10 @@ header {
 <div class="result-panel" id="result-panel">
   <div class="result-header">
     <h2>English Translation</h2>
-    <button class="btn-download" onclick="downloadResult()">Download as text file</button>
+    <div class="result-header-btns">
+      <button class="btn-download" onclick="downloadResult()">Download as text</button>
+      <button class="btn-pdf" id="btn-pdf" onclick="makeEnglishPDF()">Make English PDF</button>
+    </div>
   </div>
   <div class="result-content" id="result-content"></div>
 
@@ -453,21 +428,11 @@ header {
     var thumbnailBase64 = '';
 
     window.onload = function() {
-      var saved = localStorage.getItem('revol_api_key');
-      if (saved) {
-        document.getElementById('api-key-input').value = saved;
-        document.getElementById('api-status').textContent = 'Key saved';
-        document.getElementById('api-status').className = 'api-status saved';
+      var key = localStorage.getItem('openai_key');
+      if (!key) {
+        document.getElementById('no-key-warning').style.display = 'block';
       }
     };
-
-    function saveKey() {
-      var key = document.getElementById('api-key-input').value.trim();
-      if (!key) { alert('Please paste your API key first.'); return; }
-      localStorage.setItem('revol_api_key', key);
-      document.getElementById('api-status').textContent = 'Key saved';
-      document.getElementById('api-status').className = 'api-status saved';
-    }
 
     function setProgress(label, percent) {
       document.getElementById('progress-panel').className = 'progress-panel visible';
@@ -565,8 +530,11 @@ header {
       var file = event.target.files[0];
       if (!file) return;
 
-      var key = localStorage.getItem('revol_api_key');
-      if (!key) { showError('Please save your OpenAI API key before translating.'); return; }
+      var key = localStorage.getItem('openai_key');
+      if (!key) {
+        showError('No OpenAI key found. Go to Settings to add your key.');
+        return;
+      }
 
       hideError();
       allTranslations = [];
@@ -618,55 +586,123 @@ header {
       }
     }
 
-    function saveTopic() {
-      var name = document.getElementById('topic-name-input').value.trim();
-      if (!name) { alert('Please enter a topic name.'); return; }
-      if (!allTranslations.length) { alert('No translation to save yet.'); return; }
+    async function makeEnglishPDF() {
+      if (!allTranslations.length) { alert('No translation to convert yet.'); return; }
 
-      var topic = {
-        name: name,
-        date: new Date().toISOString(),
-        translation: allTranslations.join('\n\n---\n\n'),
-        thumbnail: thumbnailBase64,
-        quizHistory: []
-      };
-
-      db.ref('topics').push(topic).then(function() {
-        document.getElementById('save-confirm').className = 'save-confirm visible';
-      }).catch(function(err) {
-        alert('Save failed: ' + err.message);
-      });
-    }
-
-    function downloadResult() {
-      if (!allTranslations.length) return;
-      var blob = new Blob([allTranslations.join('\n\n---\n\n')], { type: 'text/plain' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = 'revol-translation.txt';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    var zone = document.getElementById('upload-zone');
-    zone.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      zone.className = 'upload-zone dragover';
-    });
-    zone.addEventListener('dragleave', function() {
-      zone.className = 'upload-zone';
-    });
-    zone.addEventListener('drop', function(e) {
-      e.preventDefault();
-      zone.className = 'upload-zone';
-      var file = e.dataTransfer.files[0];
-      if (file && file.type === 'application/pdf') {
-        handleFile({ target: { files: [file] } });
-      } else {
-        showError('Please drop a PDF file.');
+      var geminiKey = localStorage.getItem('gemini_key');
+      if (!geminiKey) {
+        alert('No Gemini key found. Go to Settings to add your Gemini key.');
+        return;
       }
-    });
+
+      var btn = document.getElementById('btn-pdf');
+      btn.disabled = true;
+      btn.textContent = 'Generating PDF...';
+
+      var fullText = allTranslations.join('\n\n---\n\n');
+
+      try {
+        var response = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + geminiKey,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: 'You are formatting revision notes for a student. Take the following translated text and reformat it into clean, well-structured revision notes in English. Use clear headings, numbered lists where appropriate, and make it easy to read and study from. Do not add new content — only reformat and tidy what is there. Return plain text only, no markdown symbols.\n\n' + fullText
+                }]
+              }]
+            })
+          }
+        );
+
+        var data = await response.json();
+
+        if (data.error) { throw new Error(data.error.message); }
+
+        var formatted = data.candidates[0].content.parts[0].text;
+
+        // Build a printable HTML page and open it so the user can use browser Print > Save as PDF
+        var printWindow = window.open('', '_blank');
+        printWindow.document.write(
+          '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+          '<title>Revol - English Notes</title>' +
+          '<style>' +
+          'body { font-family: Georgia, serif; max-width: 700px; margin: 40px auto; font-size: 14px; line-height: 1.8; color: #111; }' +
+          'h1, h2, h3 { font-family: Arial, sans-serif; }' +
+          'hr { margin: 24px 0; border: none; border-top: 1px solid #ccc; }' +
+          '@media print { body { margin: 20px; } }' +
+          '</style></head><body>' +
+
+      '<h1>Revision Notes</h1>' +
+      '<p style="color:#888; font-size:12px;">Generated by Revol</p><hr>' +
+      '<pre style="white-space: pre-wrap; font-family: Georgia, serif; font-size: 14px; line-height: 1.8;">' +
+      formatted.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+      '</pre></body></html>'
+    );
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(function() { printWindow.print(); }, 500);
+
+  } catch (err) {
+    alert('PDF generation failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Make English PDF';
+  }
+}
+
+function saveTopic() {
+  var name = document.getElementById('topic-name-input').value.trim();
+  if (!name) { alert('Please enter a topic name.'); return; }
+  if (!allTranslations.length) { alert('No translation to save yet.'); return; }
+
+  var topic = {
+    name: name,
+    date: new Date().toISOString(),
+    translation: allTranslations.join('\n\n---\n\n'),
+    thumbnail: thumbnailBase64,
+    quizHistory: []
+  };
+
+  db.ref('topics').push(topic).then(function() {
+    document.getElementById('save-confirm').className = 'save-confirm visible';
+  }).catch(function(err) {
+    alert('Save failed: ' + err.message);
+  });
+}
+
+function downloadResult() {
+  if (!allTranslations.length) return;
+  var blob = new Blob([allTranslations.join('\n\n---\n\n')], { type: 'text/plain' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'revol-translation.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+var zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  zone.className = 'upload-zone dragover';
+});
+zone.addEventListener('dragleave', function() {
+  zone.className = 'upload-zone';
+});
+zone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  zone.className = 'upload-zone';
+  var file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    handleFile({ target: { files: [file] } });
+  } else {
+    showError('Please drop a PDF file.');
+  }
+});
+
   </script>
 
 </body>
