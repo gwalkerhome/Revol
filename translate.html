@@ -645,7 +645,8 @@ display: none;
             printWindow.document.body.innerHTML = '<p style="font-family:sans-serif;padding:40px;">Generating page ' + (i + 1) + ' of ' + allPageImages.length + ', please wait...</p>';
 
             var response = await fetch(
-              'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=' + geminiKey,
+              'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=' + geminiKey,
+
               {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
